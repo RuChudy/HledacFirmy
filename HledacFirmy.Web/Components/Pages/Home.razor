@@ -1,0 +1,114 @@
+﻿@page "/"
+@using System.Net
+@using System.Text.Json
+@using System.Text.Json.Serialization
+@using Microsoft.Extensions.Options
+@using Hledac.Domain.Firma
+@using HledacFirmy.LibUI.Components
+@using HledacFirmy.Web.Infrastructure
+
+@inject IHttpClientFactory _clientFactory
+@inject IOptions<HledacFirmyOptions> _options
+
+<PageTitle>Home</PageTitle>
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h3>Hledat subjekt</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <form method="post" @onsubmit="SearchIcoForm_Submit" @formname="searchIcoForm">
+                <AntiforgeryToken />
+                <div class="form-group">
+                    <label>Napište IČ firmy:</label>
+                    <InputNumber class="form-control" @bind-Value="Model!.Ic" />
+                </div>
+                <div class="form-group m-2">
+                    <button type="submit" class="btn btn-primary">Vyhledat</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    @if (Stav == StavEnum.Nenalezeno)
+    {
+        <div class="alert alert-primary" role="alert">
+            <text>Firma s ičo '</text><strong>@Model!.Ic</strong><text>' nebyla nalezena.</text>
+        </div>
+    }
+    else if (Stav == StavEnum.Nalezeno && NalezenaFirma != null)
+    {
+        <FirmaDetail Firma="@NalezenaFirma"></FirmaDetail>
+    }
+</div>
+
+
+@code {
+
+    /// <summary>Model pro formulář hledání.</summary>
+    [SupplyParameterFromForm]
+    public NajdiIcFormModel? Model { get; set; }
+
+    /// <summary>Stav formuláře.</summary>
+    public StavEnum Stav { get; set; } = StavEnum.Nehledano;
+
+    /// <summary>Data nalezené firmy.</summary>
+    public FirmaDto? NalezenaFirma { get; set; }
+
+    protected override void OnInitialized() => Model ??= new();
+
+    private async Task SearchIcoForm_Submit()
+    {
+        NalezenaFirma = null;
+        Stav = StavEnum.Nehledano;
+
+        if (Model?.Ic == null)
+        {
+            StateHasChanged();
+            return;
+        }
+
+        string baseUri = _options.Value?.Uri ?? throw new ArgumentNullException(nameof(HledacFirmyOptions.Uri));
+
+        var request = new HttpRequestMessage(HttpMethod.Post, String.Concat(baseUri, Model?.Ic?.ToString()));
+        request.Headers.Add("Accept", "application/json");
+        request.Headers.Add("User-Agent", "-WebClient");
+
+        var client = _clientFactory.CreateClient();
+
+        var response = await client.SendAsync(request);
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            Stav = StavEnum.Nenalezeno;
+            StateHasChanged();
+        }
+        else if (response.IsSuccessStatusCode)
+        {
+            // string data = await response.Content.ReadAsStringAsync();
+
+            using var responseStream = await response.Content.ReadAsStreamAsync();
+            NalezenaFirma = await JsonSerializer.DeserializeAsync<FirmaDto>(responseStream, new JsonSerializerOptions
+            {
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                PropertyNameCaseInsensitive = true
+            });
+
+            Stav = StavEnum.Nalezeno;
+            StateHasChanged();
+        }
+    }
+
+    public enum StavEnum
+    {
+        Nehledano,
+        Nenalezeno,
+        Nalezeno
+    }
+
+    public class NajdiIcFormModel
+    {
+        public long? Ic { get; set; }
+    }
+}

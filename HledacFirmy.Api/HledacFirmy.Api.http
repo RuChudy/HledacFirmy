@@ -1,0 +1,6 @@
+@HledacFirmy.Api_HostAddress = http://localhost:5200
+
+POST {{HledacFirmy.Api_HostAddress}}/najdi-ico/7064
+Accept: application/json
+
+###

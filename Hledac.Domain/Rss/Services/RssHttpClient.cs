@@ -1,8 +1,12 @@
-﻿using System.Xml.Linq;
+﻿using System.Net;
+using System.Xml.Linq;
 using Microsoft.Extensions.Logging;
 
 namespace Hledac.Domain.Rss.Services;
 
+/// <summary>
+/// Klient na čtení RSS feedů z http zdroje.
+/// </summary>
 public class RssHttpClient
 {
     private readonly ILogger<RssHttpClient> _logger;
@@ -18,25 +22,21 @@ public class RssHttpClient
         /* Accept: application/rss+xml, application/rdf+xml;q=0.8, application/atom+xml;q=0.6, application/xml;q=0.4, text/xml;q=0.4 */
     }
 
-    public async Task<List<Item>> GetFeedsAsync(Uri address)
+    /// <summary>
+    /// Načte feed včetně článků ze zadané url adresy.
+    /// </summary>
+    /// <param name="address"></param>
+    /// <returns></returns>
+    public async Task<Feed> GetFeedsAsync(Uri address)
     {
+        ArgumentNullException.ThrowIfNull(address);
+
         using var httpResponseMessage = await _httpClient.GetAsync(address);
 
         httpResponseMessage.EnsureSuccessStatusCode();
 
         using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
 
-        var xdoc = XDocument.Load(stream: contentStream);
-
-        var chanel = xdoc.Root?.Elements().Where(e => e.Name == "channel").SingleOrDefault() ?? throw new ArgumentNullException(nameof(xdoc.Root));
-
-        List<Item> feeds = chanel.Elements().Where(e => e.Name == "item").Select(e => new Item
-        {
-            Title = (string?)e.Element("title"),
-            Body = (string?)e.Element("description")
-        })
-        .ToList();
-
-        return feeds;
+        return Feed.FromXDocument(XDocument.Load(stream: contentStream));
     }
 }

@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hledac.Domain", "Hledac.Dom
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HledacFirmy.App", "HledacFirmy.App\HledacFirmy.App.csproj", "{A464E97B-A6CF-41E8-8022-4026FD610A4A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HledacFirmy.LibUI", "HledacFirmy.LibUI\HledacFirmy.LibUI.csproj", "{DF2B70F6-C66D-402A-9FE1-23D5A1E37403}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HledacFirmy.LibUI", "HledacFirmy.LibUI\HledacFirmy.LibUI.csproj", "{DF2B70F6-C66D-402A-9FE1-23D5A1E37403}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hledac.TestProject", "Hledac.TestProject\Hledac.TestProject.csproj", "{E2B15D34-D55B-4E35-AD76-B6D1D60A4C0A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +55,10 @@ Global
 		{DF2B70F6-C66D-402A-9FE1-23D5A1E37403}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF2B70F6-C66D-402A-9FE1-23D5A1E37403}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DF2B70F6-C66D-402A-9FE1-23D5A1E37403}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2B15D34-D55B-4E35-AD76-B6D1D60A4C0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2B15D34-D55B-4E35-AD76-B6D1D60A4C0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2B15D34-D55B-4E35-AD76-B6D1D60A4C0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2B15D34-D55B-4E35-AD76-B6D1D60A4C0A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

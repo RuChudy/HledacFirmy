@@ -21,6 +21,45 @@ public class Feed
 
     public ICollection<Item> Items { get; set; } = new List<Item>();
 
+    public static Feed FromXDocument(XDocument xdoc)
+    {
+        ArgumentNullException.ThrowIfNull(xdoc);
+
+        XElement xroot = xdoc.Root ?? throw new ArgumentNullException(nameof(xdoc.Root));
+        XNamespace ns = xroot.GetDefaultNamespace();
+
+        XElement xchanel = xdoc.Root.Elements()
+            .Where(e => e.Name.Equals(ns + "channel"))
+            .SingleOrDefault() ?? throw new ArgumentNullException("rss-channel");
+
+        // pomocne
+        Uri? StringToUri(string? uriString) => string.IsNullOrWhiteSpace(uriString) ? null : new Uri(uriString, UriKind.Absolute);
+        DateTime? StringToDate(string? uriString) => DateTime.TryParse(uriString, out DateTime result) ? result : null;
+
+        List<Item> feeds = xchanel.Elements(ns + "item").Select(e => new Item
+        {
+            Guid = (string?)e.Element(ns + "guid"),
+            Link = StringToUri((string?)e.Element(ns + "link")),
+            PublishDate = StringToDate((string?)e.Element(ns + "pubDate")),
+
+            Title = (string?)e.Element(ns + "title"),
+            Body = (string?)e.Element(ns + "description"),
+            Categories = e.Elements(ns + "category").Select(e => (string)e).ToList()
+        })
+        .ToList();
+
+        return new Feed
+        {
+            Link = StringToUri((string?)xchanel.Element(ns + "link")),
+            Title = (string?)xchanel.Element(ns + "title"),
+            Language = ((string?)xchanel.Element(ns + "language")) ?? "en",
+            Copyright = (string?)xchanel.Element(ns + "copyright"),
+            Description = (string?)xchanel.Element(ns + "description"),
+            Items = feeds
+        };
+    }
+
+
     /// <summary>Produces well-formatted rss-compatible xml string.</summary>
     public string Serialize()
     {

@@ -1,5 +1,4 @@
-﻿
-namespace Hledac.Domain.Rss.Services;
+﻿namespace Hledac.Domain.Rss.Services;
 
 public interface IRssRepositoryService
 {
@@ -9,21 +8,21 @@ public interface IRssRepositoryService
     /// <param name="position">Od které pozice zero-based.</param>
     /// <param name="rowsCount">Kolik záznamů.</param>
     /// <returns>Seznam Rss webů v databázi.</returns>
-    Task<ICollection<RssSite>> GetAllAsync(int position, int rows);
+    Task<ICollection<RssCachedSite>> GetAllSitesAsync(int position, int rows);
 
     /// <summary>
     /// Klíč nesmazaného Rss webu v datbázi.
     /// </summary>
     /// <param name="rssSite"></param>
     /// <returns>Klíč Rss webu v datbázi nebo null.</returns>
-    Task<int?> GetSiteIdAsync(RssSite rssSite);
+    Task<RssCachedSite?> GetSiteAsync(RssSiteUri rssSite);
 
     /// <summary>
     /// Načte Rss kanál uložený v db dle Id.
     /// </summary>
     /// <param name="id">Id rss kanálu.</param>
     /// <returns>Rss kanál nebo null.</returns>
-    Task<Feed?> GetByIdAsync(int id);
+    Task<Feed?> GetFeedByIdAsync(int id);
 
     /// <summary>
     /// Aktualizuje nebo vytvoří Rss Web kanálem.
@@ -31,7 +30,7 @@ public interface IRssRepositoryService
     /// <param name="rssSite">Rss Web</param>
     /// <param name="feed">Rss kanál s článnky.</param>
     /// <returns>Počet aktualizovaných záznamů.</returns>
-    Task<int> AddOrUpdateAsync(RssSite rssSite, Feed feed);
+    Task<int> AddOrUpdateAsync(RssSiteUri rssSite, Feed feed);
 
     /// <summary>
     /// Označí rss kanál jako smazaný.

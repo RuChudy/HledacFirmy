@@ -24,7 +24,7 @@ public class RssRepositoryService : IRssRepositoryService
     /// <param name="position">Od které pozice zero-based.</param>
     /// <param name="rowsCount">Kolik záznamů.</param>
     /// <returns>Seznam Rss webů v databázi.</returns>
-    public async Task<ICollection<RssSite>> GetAllAsync(int position, int rows)
+    public async Task<ICollection<RssCachedSite>> GetAllSitesAsync(int position, int rows)
     {
         int calcPosition = int.Max(0, position);
         int calcRows = int.Max(0, int.Min(short.MaxValue, rows));
@@ -34,7 +34,12 @@ public class RssRepositoryService : IRssRepositoryService
             .OrderByDescending(x => x.Updated ?? x.Created)
             .Skip(position)
             .Take(rows)
-            .Select(x => new RssSite { Uri = x.SiteUri })
+            .Select(x => new RssCachedSite
+            {
+                Id = x.Id,
+                Title = x.Title ?? x.SiteUri,
+                Site = new RssSiteUri { Uri = x.SiteUri }
+            })
             .ToListAsync();
     }
 
@@ -43,7 +48,7 @@ public class RssRepositoryService : IRssRepositoryService
     /// </summary>
     /// <param name="rssSite"></param>
     /// <returns>Klíč Rss webu v datbázi nebo null.</returns>
-    public async Task<int?> GetSiteIdAsync(RssSite rssSite)
+    public async Task<RssCachedSite?> GetSiteAsync(RssSiteUri rssSite)
     {
         ArgumentNullException.ThrowIfNull(rssSite);
         ArgumentNullException.ThrowIfNull(rssSite.Uri);
@@ -52,7 +57,12 @@ public class RssRepositoryService : IRssRepositoryService
 
         return await _db.RssCacheFeeds
             .Where(x => x.Deleted == null && searchKey.Equals(x.SiteUri))
-            .Select(x => new int?(x.Id))
+            .Select(x => new RssCachedSite
+            {
+                Id = x.Id,
+                Title = x.Title ?? x.SiteUri,
+                Site = new RssSiteUri { Uri = x.SiteUri }
+            })
             .SingleOrDefaultAsync();
     }
 
@@ -99,7 +109,7 @@ public class RssRepositoryService : IRssRepositoryService
     /// </summary>
     /// <param name="id">Id rss kanálu.</param>
     /// <returns>Rss kanál nebo null.</returns>
-    public async Task<Feed?> GetByIdAsync(int id)
+    public async Task<Feed?> GetFeedByIdAsync(int id)
     {
         RssCacheFeed? dataRow = await _db.RssCacheFeeds
             .Include(x => x.FeedItems)
@@ -137,7 +147,7 @@ public class RssRepositoryService : IRssRepositoryService
     /// <param name="rssSite">Rss Web</param>
     /// <param name="feed">Rss kanál s článnky.</param>
     /// <returns>Počet aktualizovaných záznamů.</returns>
-    public async Task<int> AddOrUpdateAsync(RssSite rssSite, Feed feed)
+    public async Task<int> AddOrUpdateAsync(RssSiteUri rssSite, Feed feed)
     {
         ArgumentNullException.ThrowIfNull(rssSite);
         ArgumentNullException.ThrowIfNull(rssSite.Uri);

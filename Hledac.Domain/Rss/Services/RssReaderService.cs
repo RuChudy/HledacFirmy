@@ -16,7 +16,7 @@ public class RssReaderService : IRssReaderService
         _rssClient = rssClient;
     }
 
-    public async Task<Feed> GetFeedsAsync(RssSite rssRequest)
+    public async Task<Feed> GetFeedsAsync(RssSiteUri rssRequest)
     {
         ArgumentNullException.ThrowIfNull(rssRequest);
 

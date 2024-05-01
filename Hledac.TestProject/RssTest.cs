@@ -41,29 +41,29 @@ public class RssTest
         Assert.IsInstanceOfType<RssRepositoryService>(repos);
 
         // sport je v databázi stále
-        var rssSite = new RssSite { Uri = "https://www.ceskenoviny.cz/sluzby/rss/sport.php" };
+        var rssUri = new RssSiteUri { Uri = "https://www.ceskenoviny.cz/sluzby/rss/sport.php" };
 
-        int? siteId = await repos.GetSiteIdAsync(rssSite);
-        Assert.IsNotNull(siteId);
+        RssCachedSite? site = await repos.GetSiteAsync(rssUri);
+        Assert.IsNotNull(site);
 
-        if (siteId is not null)
+        if (site is not null)
         {
-            Feed? feed = await repos.GetByIdAsync(siteId.Value);
+            Feed? feed = await repos.GetFeedByIdAsync(site.Id);
             Assert.IsNotNull(feed);
 
-            Assert.IsTrue((await repos.RemoveAsync(siteId.Value)) > 0);
-            Assert.IsTrue((await repos.GetSiteIdAsync(rssSite)) is null);
+            Assert.IsTrue((await repos.RemoveAsync(site.Id)) > 0);
+            Assert.IsTrue((await repos.GetSiteAsync(rssUri)) is null);
 
-            Assert.IsTrue((await repos.AddOrUpdateAsync(rssSite, feed) > 0));
+            Assert.IsTrue((await repos.AddOrUpdateAsync(rssUri, feed) > 0));
 
-            siteId = await repos.GetSiteIdAsync(rssSite);
-            Assert.IsNotNull(siteId);
+            site = await repos.GetSiteAsync(rssUri);
+            Assert.IsNotNull(site);
 
-            Assert.IsTrue(await repos.DeleteAsync(siteId.Value));
-            Assert.IsTrue((await repos.GetSiteIdAsync(rssSite)) is null);
+            Assert.IsTrue(await repos.DeleteAsync(site.Id));
+            Assert.IsTrue((await repos.GetSiteAsync(rssUri)) is null);
 
-            Assert.IsTrue((await repos.AddOrUpdateAsync(rssSite, feed) > 0));
-            Assert.IsTrue((await repos.GetSiteIdAsync(rssSite)) is not null);
+            Assert.IsTrue((await repos.AddOrUpdateAsync(rssUri, feed) > 0));
+            Assert.IsTrue((await repos.GetSiteAsync(rssUri)) is not null);
         }
     }
 
@@ -86,7 +86,7 @@ public class RssTest
             Tenis            https://www.ceskenoviny.cz/sluzby/rss/tenis.php
         */
 
-        var rssSite = new RssSite { Uri = "https://www.ceskenoviny.cz/sluzby/rss/magazin.php" };
+        var rssSite = new RssSiteUri { Uri = "https://www.ceskenoviny.cz/sluzby/rss/magazin.php" };
         Feed? feed = await rssReader.GetFeedsAsync(rssSite);
         Assert.IsNotNull(feed);
         Assert.IsTrue(feed.Items.Any());

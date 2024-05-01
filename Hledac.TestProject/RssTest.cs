@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Hledac.Database;
 using Hledac.Domain.Rss.Services;
 using Hledac.Database.Context;
+using Hledac.Domain.Rss;
 
 namespace Hledac.TestProject;
 
@@ -34,10 +35,43 @@ public class RssTest
         .Build();
 
     [TestMethod]
-    public async Task RssReadTest()
+    public async Task RssDbUpdateTest()
     {
-        var rssService = _host.Services.GetRequiredService<IRssReaderService>();
-        Assert.IsInstanceOfType<RssReaderService>(rssService);
+        var repos = _host.Services.GetRequiredService<IRssRepositoryService>();
+        Assert.IsInstanceOfType<RssRepositoryService>(repos);
+
+        // sport je v databázi stále
+        var rssSite = new RssSite { Uri = "https://www.ceskenoviny.cz/sluzby/rss/sport.php" };
+
+        int? siteId = await repos.GetSiteIdAsync(rssSite);
+        Assert.IsNotNull(siteId);
+
+        if (siteId is not null)
+        {
+            Feed? feed = await repos.GetByIdAsync(siteId.Value);
+            Assert.IsNotNull(feed);
+
+            Assert.IsTrue((await repos.RemoveAsync(siteId.Value)) > 0);
+            Assert.IsTrue((await repos.GetSiteIdAsync(rssSite)) is null);
+
+            Assert.IsTrue((await repos.AddOrUpdateAsync(rssSite, feed) > 0));
+
+            siteId = await repos.GetSiteIdAsync(rssSite);
+            Assert.IsNotNull(siteId);
+
+            Assert.IsTrue(await repos.DeleteAsync(siteId.Value));
+            Assert.IsTrue((await repos.GetSiteIdAsync(rssSite)) is null);
+
+            Assert.IsTrue((await repos.AddOrUpdateAsync(rssSite, feed) > 0));
+            Assert.IsTrue((await repos.GetSiteIdAsync(rssSite)) is not null);
+        }
+    }
+
+    [TestMethod]
+    public async Task RssReadAndUpdateTest()
+    {
+        var rssReader = _host.Services.GetRequiredService<IRssReaderService>();
+        Assert.IsInstanceOfType<RssReaderService>(rssReader);
 
         /*
             Vše              https://www.ceskenoviny.cz/sluzby/rss/zpravy.php
@@ -52,18 +86,14 @@ public class RssTest
             Tenis            https://www.ceskenoviny.cz/sluzby/rss/tenis.php
         */
 
-
         var rssSite = new RssSite { Uri = "https://www.ceskenoviny.cz/sluzby/rss/magazin.php" };
-
-        var feed = await rssService.GetFeedsAsync(rssSite);
+        Feed? feed = await rssReader.GetFeedsAsync(rssSite);
         Assert.IsNotNull(feed);
-        Assert.IsTrue(feed?.Items.Any());
+        Assert.IsTrue(feed.Items.Any());
 
-        /*
         var repos = _host.Services.GetRequiredService<IRssRepositoryService>();
         Assert.IsInstanceOfType<RssRepositoryService>(repos);
 
-        await repos.AddAsync(rssSite, feed);
-        */
+        await repos.AddOrUpdateAsync(rssSite, feed);
     }
 }

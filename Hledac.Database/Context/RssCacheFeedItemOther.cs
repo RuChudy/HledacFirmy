@@ -6,7 +6,7 @@ namespace Hledac.Database.Context;
 /// Seznam kategorií jako JSON objekt.
 /// </summary>
 [ComplexType]
-public class RssCacheCategories
+public class RssCacheFeedItemOther
 {
     public required List<string> Categories { get; set; }
 }

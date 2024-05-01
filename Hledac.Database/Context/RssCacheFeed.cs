@@ -25,6 +25,6 @@ public class RssCacheFeed
     public string? Copyright { get; set; }
     public string? Description { get; set; }
 
-    /// <summary>Zprávz</summary>
-    public List<RssCacheFeedItem> FeedItems { get; } = new List<RssCacheFeedItem>();
+    /// <summary>Zprávy</summary>
+    public List<RssCacheFeedItem> FeedItems { get; } = new List<RssCacheFeedItem>()!;
 }

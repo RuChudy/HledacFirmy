@@ -18,7 +18,7 @@ namespace Hledac.Database.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.2")
+                .HasAnnotation("ProductVersion", "8.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -82,9 +82,6 @@ namespace Hledac.Database.Migrations
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("Deleted")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("FeedId")
                         .HasColumnType("int");
 
@@ -94,16 +91,13 @@ namespace Hledac.Database.Migrations
                     b.Property<string>("Link")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("PublishDate")
+                    b.Property<DateTime?>("PublishDateUtc")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("Updated")
-                        .HasColumnType("datetime2");
-
-                    b.ComplexProperty<Dictionary<string, object>>("Categories", "Hledac.Database.Context.RssCacheFeedItem.Categories#RssCacheCategories", b1 =>
+                    b.ComplexProperty<Dictionary<string, object>>("OtherProperties", "Hledac.Database.Context.RssCacheFeedItem.OtherProperties#RssCacheFeedItemOther", b1 =>
                         {
                             b1.IsRequired();
 

@@ -43,6 +43,7 @@ app.MapGet("/", () => "Hello World!").WithName("HelloWorld").WithTags("health").
 
 // Vyhledávač iča
 app.MapPost("/najdi-ico/{ico}", ApiPostNajdiIco).WithName("NajdiIco").WithTags("ico").Produces(404).Produces<FirmaDto>().WithOpenApi();
+app.MapGet("/ico/", UlozenaIca).WithName("UlozenaIca").WithTags("ico").Produces<IList<string>>().WithOpenApi();
 
 // Rss kanály
 app.MapGet("/rss/all", ApiGetAllRssSite).WithName("RssAll").WithTags("rss").Produces<IEnumerable<RssCachedSite>>().WithOpenApi();
@@ -58,6 +59,13 @@ static async Task<IResult> ApiPostNajdiIco(string ico, FirmaService fs)
     var firma = await fs.NajdiFirmuDleIcoNeboNullAsync(ico);
     return (firma == null) ? TypedResults.NotFound() : TypedResults.Ok(firma);
 }
+
+static async Task<IResult> UlozenaIca(FirmaService fs)
+{
+    var seznamIc = await fs.UlozenaIca();
+    return TypedResults.Ok(seznamIc);
+}
+
 
 static async Task<IResult> ApiPostAddOrUpdateRssSite([FromBody] RssSiteUri rssUri, IRssRepositoryService rssRepository, IRssReaderService rssReader, CancellationToken cancellation)
 {

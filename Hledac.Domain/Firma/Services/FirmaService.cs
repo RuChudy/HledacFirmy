@@ -26,6 +26,19 @@ public class FirmaService
     }
 
     /// <summary>
+    /// Vrátí seznam uložených ič (max 100).
+    /// </summary>
+    /// <returns>Seznam ulozenych ic.</returns>
+    public async Task<List<string>> UlozenaIca()
+    {
+        return await _db.Subjekty
+            .OrderByDescending(s => s.Created)
+            .Take(100)
+            .Select(s => s.Ico)
+            .ToListAsync();
+    }
+
+    /// <summary>
     /// Koukni do databaze, zda tam je ico. Pokud ne, tak zaloz tuto firmu.
     /// </summary>
     /// <param name="ico">Ico fitmy.</param>

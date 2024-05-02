@@ -39,16 +39,17 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // Test na funkcnost
-app.MapGet("/", () => "Hello World!").WithName("HelloWorld").WithOpenApi();
+app.MapGet("/", () => "Hello World!").WithName("HelloWorld").WithTags("health").WithOpenApi();
 
 // Vyhledávač iča
-app.MapPost("/najdi-ico/{ico}", ApiPostNajdiIco).WithName("NajdiIco").Produces(404).Produces<FirmaDto>().WithOpenApi();
+app.MapPost("/najdi-ico/{ico}", ApiPostNajdiIco).WithName("NajdiIco").WithTags("ico").Produces(404).Produces<FirmaDto>().WithOpenApi();
 
 // Rss kanály
-app.MapGet("/rss/all", ApiGetAllRssSite).WithName("RssAll").Produces<IEnumerable<RssCachedSite>>().WithOpenApi();
-app.MapGet("/rss/feed/{id}", ApiGetRssFeed).WithName("RssFeed").Produces(404).Produces<Feed>().WithOpenApi();
-app.MapPost("/rss/feed", ApiPostAddOrUpdateRssSite).WithName("RssAddFeed").Produces<Feed>().WithOpenApi();
-app.MapDelete("/rss/feed/{id}", ApiDeleteRssFeed).WithName("RssDeleteFeed").Produces(404).WithOpenApi();
+app.MapGet("/rss/all", ApiGetAllRssSite).WithName("RssAll").WithTags("rss").Produces<IEnumerable<RssCachedSite>>().WithOpenApi();
+app.MapGet("/rss/feed/{id}", ApiGetRssFeed).WithName("RssFeed").WithTags("rss").Produces(404).Produces<Feed>().WithOpenApi();
+app.MapDelete("/rss/feed/{id}", ApiDeleteRssFeed).WithName("RssDeleteFeed").WithTags("rss").Produces(404).WithOpenApi();
+app.MapPost("/rss/feed", ApiPostAddOrUpdateRssSite).WithName("RssAddFeed").WithTags("rss").Produces<Feed>().WithOpenApi();
+app.MapPost("/rss/delmore", ApiPostDeleteRssFeedBatch).WithName("RssDeleteMoreFeeds").WithTags("rss").Produces(404).WithOpenApi();
 
 app.Run();
 
@@ -96,3 +97,9 @@ static async Task<IResult> ApiDeleteRssFeed(int id, IRssRepositoryService rssRep
 {
     return (await rssRepository.DeleteAsync(id, cancellation) == true) ? TypedResults.Ok() : TypedResults.NotFound();
 }
+
+static async Task<IResult> ApiPostDeleteRssFeedBatch(IEnumerable<int> id, IRssRepositoryService rssRepository, CancellationToken cancellation)
+{
+    return (await rssRepository.BulkDeleteAsync(id, cancellation) > 0) ? TypedResults.Ok() : TypedResults.NotFound();
+}
+

@@ -7,5 +7,5 @@ public interface IRssReaderService
     /// </summary>
     /// <param name="rssRequest">Rss web.</param>
     /// <returns>Načtený feed z webu.</returns>
-    Task<Feed> GetFeedsAsync(RssSiteUri rssRequest);
+    Task<Feed> GetFeedsAsync(RssSiteUri rssRequest, CancellationToken cancellation = default);
 }

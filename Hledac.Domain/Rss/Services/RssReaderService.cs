@@ -16,12 +16,12 @@ public class RssReaderService : IRssReaderService
         _rssClient = rssClient;
     }
 
-    public async Task<Feed> GetFeedsAsync(RssSiteUri rssRequest)
+    public async Task<Feed> GetFeedsAsync(RssSiteUri rssRequest, CancellationToken cancellation)
     {
         ArgumentNullException.ThrowIfNull(rssRequest);
 
         Uri uri = new Uri(rssRequest.Uri, UriKind.Absolute);
 
-        return await _rssClient.GetFeedsAsync(uri);
+        return await _rssClient.GetFeedsAsync(uri, cancellation);
     }
 }

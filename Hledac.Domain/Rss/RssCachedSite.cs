@@ -1,4 +1,4 @@
-﻿namespace Hledac.Domain.Rss.Services;
+﻿namespace Hledac.Domain.Rss;
 
 public class RssCachedSite
 {

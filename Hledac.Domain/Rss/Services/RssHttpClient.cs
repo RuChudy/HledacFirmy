@@ -25,18 +25,28 @@ public class RssHttpClient
     /// <summary>
     /// Načte feed včetně článků ze zadané url adresy.
     /// </summary>
-    /// <param name="address"></param>
+    /// <param name="address">Url adresa webu.</param>
+    /// <param name="cancel">Zastavení.</param>
     /// <returns></returns>
-    public async Task<Feed> GetFeedsAsync(Uri address)
+    public async Task<Feed> GetFeedsAsync(Uri address, CancellationToken cancel)
     {
         ArgumentNullException.ThrowIfNull(address);
 
+        _logger.LogDebug($"RSS kontaktuji '{address}'..");
         using var httpResponseMessage = await _httpClient.GetAsync(address);
 
+        _logger.LogDebug($"RSS stav odpovědi '{httpResponseMessage.StatusCode}'.");
         httpResponseMessage.EnsureSuccessStatusCode();
-
-        using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
-
-        return Feed.FromXDocument(XDocument.Load(stream: contentStream));
+        try
+        {
+            using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
+            return Feed.FromXDocument(XDocument.Load(stream: contentStream));
+        }
+        catch (Exception ex)
+        {
+            var msg = "RSS chyba čtení odpovědi z '{address}'!";
+            _logger.LogError(msg);
+            throw new Exception(msg, ex);
+        }
     }
 }

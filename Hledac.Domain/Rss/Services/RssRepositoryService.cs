@@ -1,6 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Hledac.Database.Context;
+using System.Linq;
+using System.Net;
+using System.Data;
 
 namespace Hledac.Domain.Rss.Services;
 
@@ -23,8 +26,9 @@ public class RssRepositoryService : IRssRepositoryService
     /// </summary>
     /// <param name="position">Od které pozice zero-based.</param>
     /// <param name="rowsCount">Kolik záznamů.</param>
+    /// <param name="cancellation">Zastavení.</param>
     /// <returns>Seznam Rss webů v databázi.</returns>
-    public async Task<ICollection<RssCachedSite>> GetAllSitesAsync(int position, int rows)
+    public async Task<ICollection<RssCachedSite>> GetAllSitesAsync(int position, int rows, CancellationToken cancellation)
     {
         int calcPosition = int.Max(0, position);
         int calcRows = int.Max(0, int.Min(short.MaxValue, rows));
@@ -40,15 +44,16 @@ public class RssRepositoryService : IRssRepositoryService
                 Title = x.Title ?? x.SiteUri,
                 Site = new RssSiteUri { Uri = x.SiteUri }
             })
-            .ToListAsync();
+            .ToListAsync(cancellation);
     }
 
     /// <summary>
     /// Klíč nesmazaného Rss webu v datbázi.
     /// </summary>
     /// <param name="rssSite"></param>
+    /// <param name="cancellation">Zastavení.</param>
     /// <returns>Klíč Rss webu v datbázi nebo null.</returns>
-    public async Task<RssCachedSite?> GetSiteAsync(RssSiteUri rssSite)
+    public async Task<RssCachedSite?> GetSiteAsync(RssSiteUri rssSite, CancellationToken cancellation)
     {
         ArgumentNullException.ThrowIfNull(rssSite);
         ArgumentNullException.ThrowIfNull(rssSite.Uri);
@@ -63,34 +68,59 @@ public class RssRepositoryService : IRssRepositoryService
                 Title = x.Title ?? x.SiteUri,
                 Site = new RssSiteUri { Uri = x.SiteUri }
             })
-            .SingleOrDefaultAsync();
+            .SingleOrDefaultAsync(cancellation);
     }
 
     /// <summary>
     /// Označí rss kanál jako smazaný.
     /// </summary>
     /// <param name="id">Id rss kanálu.</param>
+    /// <param name="cancellation">Zastavení.</param>
     /// <returns>Došlo ke smazaní záznamu?</returns>
-    public async Task<bool> DeleteAsync(int id)
+    public async Task<bool> DeleteAsync(int id, CancellationToken cancellation)
     {
         RssCacheFeed? dataRow = await _db.RssCacheFeeds
             .Where(x => x.Id == id && x.Deleted == null)
-            .SingleOrDefaultAsync();
+            .SingleOrDefaultAsync(cancellation);
 
         if (dataRow is null)
             return false;
 
         dataRow.Deleted = DateTime.UtcNow;
 
-        return (await _db.SaveChangesAsync()) > 0;
+        _logger.LogDebug($"Značím rss kanál Id={dataRow.Id} jako smazaný..");
+        return (await _db.SaveChangesAsync(cancellation)) > 0;
+    }
+
+    /// <summary>
+    /// Označí několik rss kanálů jako smazaný.
+    /// </summary>
+    /// <param name="keys">Seznam Id rss kanálů.</param>
+    /// <param name="cancellation">Zastavení.</param>
+    /// <returns>Počet smazaných záznamů.</returns>
+    public async Task<int> BulkDeleteAsync(IEnumerable<int> keys, CancellationToken cancellation)
+    {
+        ArgumentNullException.ThrowIfNull(keys);
+
+        if (!keys.Any())
+            return 0;
+
+        DateTime timeToDelete = DateTime.UtcNow;
+
+        var info = String.Join(",", keys.Take(10).Select(k => k.ToString()).AsEnumerable());
+        _logger.LogDebug($"Značím rss kanály Ids={info} jako smazané..");
+
+        return await _db.RssCacheFeeds.Where(r => keys.Contains(r.Id))
+            .ExecuteUpdateAsync(r => r.SetProperty(e => e.Deleted, timeToDelete), cancellation);
     }
 
     /// <summary>
     /// Odstraní nenávratně záznam rss kanálu.
     /// </summary>
     /// <param name="id">Id rss kanálu.</param>
+    /// <param name="cancellation">Zastavení.</param>
     /// <returns>Počet smazaných záznamů.</returns>
-    public async Task<int> RemoveAsync(int id)
+    public async Task<int> RemoveAsync(int id, CancellationToken cancellation)
     {
         RssCacheFeed? dataRow = await _db.RssCacheFeeds.Include(x => x.FeedItems)
             .Where(x => x.Id == id).SingleOrDefaultAsync();
@@ -98,26 +128,64 @@ public class RssRepositoryService : IRssRepositoryService
         if (dataRow is null)
             return 0;
 
-        _db.RssCacheFeedItems.RemoveRange(dataRow.FeedItems);
-        _db.RssCacheFeeds.Remove(dataRow);
+        _logger.LogDebug($"Odstraňuji rss kanál Id={dataRow.Id}..");
 
-        return await _db.SaveChangesAsync();
+        using (var transaction = _db.Database.BeginTransaction())
+        {
+            _db.RssCacheFeedItems.RemoveRange(dataRow.FeedItems);
+            _db.RssCacheFeeds.Remove(dataRow);
+
+            var removed = await _db.SaveChangesAsync(cancellation);
+
+            transaction.Commit();
+            return removed;
+        }
+    }
+
+    /// <summary>
+    /// Odstraní nenávratně rss kanály, které jsou označené jako smazané.
+    /// </summary>
+    /// <param name="cancellation">Zastavení.</param>
+    /// <returns>Počet smazaných záznamů.</returns>
+    public async Task<int> BatchRemoveDeletedAsync(CancellationToken cancellation)
+    {
+        var deletedCount = await _db.RssCacheFeeds.CountAsync(r => r.Deleted != null, cancellation);
+        if (deletedCount <= 0)
+            return 0;
+
+        cancellation.ThrowIfCancellationRequested();
+
+        _logger.LogDebug("Odstraňuji smazané rss kanály..");
+
+        using (var transaction = _db.Database.BeginTransaction())
+        {
+            int deletedRows = await _db.RssCacheFeedItems.Where(r => r.Feed.Deleted == null).ExecuteDeleteAsync(cancellation);
+            deletedRows += await _db.RssCacheFeeds.Where(r => r.Deleted != null).ExecuteDeleteAsync(cancellation);
+
+            cancellation.ThrowIfCancellationRequested();
+            transaction.Commit();
+
+            return deletedRows;
+        }
     }
 
     /// <summary>
     /// Načte Rss kanál uložený v db dle Id.
     /// </summary>
     /// <param name="id">Id rss kanálu.</param>
+    /// <param name="cancellation">Zastavení.</param>
     /// <returns>Rss kanál nebo null.</returns>
-    public async Task<Feed?> GetFeedByIdAsync(int id)
+    public async Task<Feed?> GetFeedByIdAsync(int id, CancellationToken cancellation)
     {
         RssCacheFeed? dataRow = await _db.RssCacheFeeds
             .Include(x => x.FeedItems)
             .Where(x => x.Id == id && x.Deleted == null)
-            .SingleOrDefaultAsync();
+            .SingleOrDefaultAsync(cancellation);
 
         if (dataRow is null)
             return null;
+
+        _logger.LogDebug($"Čtu rss kanál Id={dataRow.Id} '{dataRow.Title}'[{dataRow.FeedItems.Count}] z databáze..");
 
         Uri? ToUri(string? url) => string.IsNullOrWhiteSpace(url) ? null : new Uri(url, UriKind.Absolute);
 
@@ -146,8 +214,9 @@ public class RssRepositoryService : IRssRepositoryService
     /// </summary>
     /// <param name="rssSite">Rss Web</param>
     /// <param name="feed">Rss kanál s článnky.</param>
+    /// <param name="cancellation">Zastavení.</param>
     /// <returns>Počet aktualizovaných záznamů.</returns>
-    public async Task<int> AddOrUpdateAsync(RssSiteUri rssSite, Feed feed)
+    public async Task<int> AddOrUpdateAsync(RssSiteUri rssSite, Feed feed, CancellationToken cancellation)
     {
         ArgumentNullException.ThrowIfNull(rssSite);
         ArgumentNullException.ThrowIfNull(rssSite.Uri);
@@ -158,53 +227,64 @@ public class RssRepositoryService : IRssRepositoryService
         RssCacheFeed? dataRow = await _db.RssCacheFeeds
             .Include(x => x.FeedItems)
             .Where(x => searchKey.Equals(x.SiteUri))
-            .SingleOrDefaultAsync();
+            .SingleOrDefaultAsync(cancellation);
 
-        if (dataRow is null)
+        using (var transaction = _db.Database.BeginTransaction())
         {
-            // Zalozime novy feed
-            dataRow = new RssCacheFeed
+            if (dataRow is null)
             {
-                Created = DateTime.UtcNow,
-                SiteUri = rssSite.Uri,
-                Link = feed.Link?.ToString(),
-                Title = feed.Title,
-                Language = feed.Language,
-                Copyright = feed.Copyright,
-                Description = feed.Description
-            };
+                // Zalozime novy feed
+                _logger.LogDebug("Vytvářím nový rss kanál..");
 
-            await _db.AddAsync(dataRow);
-        }
-        else
-        {
-            // Aktualizujeme existijici feed
-            dataRow.Updated = DateTime.UtcNow;
-            dataRow.Deleted = null;
+                dataRow = new RssCacheFeed
+                {
+                    Created = DateTime.UtcNow,
+                    SiteUri = rssSite.Uri,
+                    Link = feed.Link?.ToString(),
+                    Title = feed.Title,
+                    Language = feed.Language,
+                    Copyright = feed.Copyright,
+                    Description = feed.Description
+                };
 
-            // Stare clanky mazeme.
-            if (dataRow.FeedItems.Count > 0)
-                _db.RssCacheFeedItems.RemoveRange(dataRow.FeedItems);
-        }
-
-        // Ulozime nove clanky
-        dataRow.FeedItems.AddRange(
-            feed.Items.Select(i => new RssCacheFeedItem
+                await _db.AddAsync(dataRow);
+            }
+            else
             {
-                FeedId = 0,
-                Feed = dataRow,
+                // Aktualizujeme existijici feed
+                _logger.LogDebug($"Aktualizuji rss kanál Id={dataRow.Id}..");
 
-                Created = DateTime.UtcNow,
-                PublishDateUtc = i.PublishDate,
-                Guid = i.Guid,
-                Link = i.Link?.ToString(),
-                Title = i.Title?.Trim(),
-                Body = i.Body,
-                OtherProperties = new RssCacheFeedItemOther { Categories = i.Categories.ToList() }
-            })
-            .AsEnumerable()
-        );
+                dataRow.Updated = DateTime.UtcNow;
+                dataRow.Deleted = null;
 
-        return await _db.SaveChangesAsync();
+                // Stare clanky mazeme.
+                if (dataRow.FeedItems.Count > 0)
+                    _db.RssCacheFeedItems.RemoveRange(dataRow.FeedItems);
+            }
+
+            // Ulozime nove clanky
+            dataRow.FeedItems.AddRange(
+                feed.Items.Select(i => new RssCacheFeedItem
+                {
+                    FeedId = 0,
+                    Feed = dataRow,
+
+                    Created = DateTime.UtcNow,
+                    PublishDateUtc = i.PublishDate,
+                    Guid = i.Guid,
+                    Link = i.Link?.ToString(),
+                    Title = i.Title?.Trim(),
+                    Body = i.Body,
+                    OtherProperties = new RssCacheFeedItemOther { Categories = i.Categories.ToList() }
+                })
+                .AsEnumerable()
+            );
+
+            int changedRows = await _db.SaveChangesAsync(cancellation);
+            transaction.Commit();
+
+            _logger.LogDebug($"Rss kanál uložen Id={dataRow.Id}.");
+            return changedRows;
+        }
     }
 }

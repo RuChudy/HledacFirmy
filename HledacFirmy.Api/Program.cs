@@ -58,38 +58,41 @@ static async Task<IResult> ApiPostNajdiIco(string ico, FirmaService fs)
     return (firma == null) ? TypedResults.NotFound() : TypedResults.Ok(firma);
 }
 
-static async Task<IResult> ApiPostAddOrUpdateRssSite([FromBody] RssSiteUri rssUri, IRssRepositoryService rssRepository, IRssReaderService rssReader)
+static async Task<IResult> ApiPostAddOrUpdateRssSite([FromBody] RssSiteUri rssUri, IRssRepositoryService rssRepository, IRssReaderService rssReader, CancellationToken cancellation)
 {
     ArgumentNullException.ThrowIfNull(rssUri?.Uri);
 
-    var site = await rssRepository.GetSiteAsync(rssUri);
+    RssCachedSite? site = await rssRepository.GetSiteAsync(rssUri, cancellation);
     if (site == null)
     {
-        var newFeed = await rssReader.GetFeedsAsync(rssUri);
-        await rssRepository.AddOrUpdateAsync(rssUri, newFeed);
+        Feed? newFeed = await rssReader.GetFeedsAsync(rssUri, cancellation);
 
-        site = await rssRepository.GetSiteAsync(rssUri);
+        cancellation.ThrowIfCancellationRequested();
+
+        await rssRepository.AddOrUpdateAsync(rssUri, newFeed, cancellation);
+
+        site = await rssRepository.GetSiteAsync(rssUri, cancellation);
     }
 
     ArgumentNullException.ThrowIfNull(site);
 
-    var result = await rssRepository.GetFeedByIdAsync(site.Id);
+    var result = await rssRepository.GetFeedByIdAsync(site.Id, cancellation);
     return TypedResults.Ok(result);
 }
 
-static async Task<IResult> ApiGetAllRssSite(IRssRepositoryService rssRepository)
+static async Task<IResult> ApiGetAllRssSite(IRssRepositoryService rssRepository, CancellationToken cancellation)
 {
-    var sites = await rssRepository.GetAllSitesAsync(0, short.MaxValue);
+    var sites = await rssRepository.GetAllSitesAsync(0, short.MaxValue, cancellation);
     return TypedResults.Ok(sites);
 }
 
-static async Task<IResult> ApiGetRssFeed(int id, IRssRepositoryService rssRepository)
+static async Task<IResult> ApiGetRssFeed(int id, IRssRepositoryService rssRepository, CancellationToken cancellation)
 {
-    var feed = await rssRepository.GetFeedByIdAsync(id);
+    var feed = await rssRepository.GetFeedByIdAsync(id, cancellation);
     return (feed == null) ? TypedResults.NotFound() : TypedResults.Ok(feed);
 }
 
-static async Task<IResult> ApiDeleteRssFeed(int id, IRssRepositoryService rssRepository)
+static async Task<IResult> ApiDeleteRssFeed(int id, IRssRepositoryService rssRepository, CancellationToken cancellation)
 {
-    return (await rssRepository.DeleteAsync(id) == true) ? TypedResults.Ok() : TypedResults.NotFound();
+    return (await rssRepository.DeleteAsync(id, cancellation) == true) ? TypedResults.Ok() : TypedResults.NotFound();
 }

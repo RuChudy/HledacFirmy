@@ -1,5 +1,8 @@
 ﻿namespace Hledac.Domain.Rss.Services;
 
+/// <summary>
+/// Nastavení pro vytvoření RSS kanálu.
+/// </summary>
 public class RssSettings
 {
     public static readonly string SectionName = "RssSettings";

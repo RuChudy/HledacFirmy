@@ -1,4 +1,4 @@
-﻿namespace HledacFirmy.Web.Infrastructure;
+﻿namespace HledacFirmy.WebBlazorApp.Infrastructure;
 
 public class HledacFirmyOptions
 {

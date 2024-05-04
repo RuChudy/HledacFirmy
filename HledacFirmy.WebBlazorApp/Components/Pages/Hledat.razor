@@ -1,16 +1,17 @@
-﻿@page "/"
+﻿@page "/Hledac"
+@attribute [StreamRendering]
 @using System.Net
 @using System.Text.Json
 @using System.Text.Json.Serialization
 @using Microsoft.Extensions.Options
 @using Hledac.Domain.Firma
-@using HledacFirmy.LibUI.Components
-@using HledacFirmy.Web.Infrastructure
+@using HledacFirmy.WebBlazorApp.Infrastructure
+@using HledacFirmy.WebBlazorApp.Components.Controls
 
-@inject IHttpClientFactory _clientFactory
 @inject IOptions<HledacFirmyOptions> _options
+@inject IHttpClientFactory _clientFactory
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Hledač</PageTitle>
 
 <div class="container">
     <div class="row">
@@ -69,6 +70,7 @@
             StateHasChanged();
             return;
         }
+
 
         string baseUri = _options.Value?.Uri ?? throw new ArgumentNullException(nameof(HledacFirmyOptions.Uri));
 

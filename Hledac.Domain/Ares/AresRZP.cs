@@ -542,7 +542,7 @@ public class SouvisejiciSubjekty
     public string? ObchodniJmeno { get; set; }
 
     [JsonPropertyName("sidlo")]
-    public Sidlo Sidlo { get; set; }
+    public Sidlo? Sidlo { get; set; }
 
     [JsonPropertyName("typSubjektu")]
     public string? TypSubjektu { get; set; }
@@ -554,7 +554,7 @@ public class SouvisejiciSubjekty
     public string? KodStatu { get; set; }
 
     [JsonPropertyName("osobyZastupce")]
-    public List<OsobyZastupce> OsobyZastupce { get; set; }
+    public List<OsobyZastupce>? OsobyZastupce { get; set; }
 }
 
 public class Zaznamy
@@ -566,7 +566,7 @@ public class Zaznamy
     public string? ObchodniJmeno { get; set; }
 
     [JsonPropertyName("sidlo")]
-    public Sidlo Sidlo { get; set; }
+    public Sidlo? Sidlo { get; set; }
 
     [JsonPropertyName("pravniForma")]
     public string? PravniForma { get; set; }
@@ -587,13 +587,13 @@ public class Zaznamy
     public string? Dic { get; set; }
 
     [JsonPropertyName("insolvencniRizeni")]
-    public InsolvencniRizeni InsolvencniRizeni { get; set; }
+    public InsolvencniRizeni? InsolvencniRizeni { get; set; }
 
     [JsonPropertyName("datumDoruceniVypisu")]
     public string? DatumDoruceniVypisu { get; set; }
 
     [JsonPropertyName("adresySubjektu")]
-    public List<AdresySubjektu> AdresySubjektu { get; set; }
+    public List<AdresySubjektu>? AdresySubjektu { get; set; }
 
     [JsonPropertyName("typSubjektu")]
     public string? TypSubjektu { get; set; }
@@ -605,13 +605,13 @@ public class Zaznamy
     public string? OrganizacniSlozka { get; set; }
 
     [JsonPropertyName("zivnostiStav")]
-    public ZivnostiStav ZivnostiStav { get; set; }
+    public ZivnostiStav? ZivnostiStav { get; set; }
 
     [JsonPropertyName("datumZapisuVr")]
     public string? DatumZapisuVr { get; set; }
 
     [JsonPropertyName("provozovnyStav")]
-    public ProvozovnyStav ProvozovnyStav { get; set; }
+    public ProvozovnyStav? ProvozovnyStav { get; set; }
 
     [JsonPropertyName("primarniZaznam")]
     public bool? PrimarniZaznam { get; set; }
@@ -620,16 +620,16 @@ public class Zaznamy
     public string? KodStatu { get; set; }
 
     [JsonPropertyName("souvisejiciSubjekty")]
-    public List<SouvisejiciSubjekty> SouvisejiciSubjekty { get; set; }
+    public List<SouvisejiciSubjekty>? SouvisejiciSubjekty { get; set; }
 
     [JsonPropertyName("osobaPodnikatel")]
-    public OsobaPodnikatel OsobaPodnikatel { get; set; }
+    public OsobaPodnikatel? OsobaPodnikatel { get; set; }
 
     [JsonPropertyName("angazovaneOsoby")]
-    public List<AngazovaneOsoby> AngazovaneOsoby { get; set; }
+    public List<AngazovaneOsoby>? AngazovaneOsoby { get; set; }
 
     [JsonPropertyName("zivnosti")]
-    public List<Zivnosti> Zivnosti { get; set; }
+    public List<Zivnosti>? Zivnosti { get; set; }
 }
 
 public class ZivnostBezOz
@@ -656,16 +656,16 @@ public class Zivnosti
     public string? PredmetPodnikani { get; set; }
 
     [JsonPropertyName("pozastaveniZivnosti")]
-    public List<PozastaveniZivnosti> PozastaveniZivnosti { get; set; }
+    public List<PozastaveniZivnosti>? PozastaveniZivnosti { get; set; }
 
     [JsonPropertyName("podminkyProvozovaniZivnosti")]
-    public List<PodminkyProvozovaniZivnosti> PodminkyProvozovaniZivnosti { get; set; }
+    public List<PodminkyProvozovaniZivnosti>? PodminkyProvozovaniZivnosti { get; set; }
 
     [JsonPropertyName("preruseniZivnosti")]
-    public List<PreruseniZivnosti> PreruseniZivnosti { get; set; }
+    public List<PreruseniZivnosti>? PreruseniZivnosti { get; set; }
 
     [JsonPropertyName("zivnostBezOz")]
-    public List<ZivnostBezOz> ZivnostBezOz { get; set; }
+    public List<ZivnostBezOz>? ZivnostBezOz { get; set; }
 
     [JsonPropertyName("datumAktualizace")]
     public string? DatumAktualizace { get; set; }
@@ -674,13 +674,13 @@ public class Zivnosti
     public string? DruhZivnosti { get; set; }
 
     [JsonPropertyName("oboryCinnosti")]
-    public List<OboryCinnosti> OboryCinnosti { get; set; }
+    public List<OboryCinnosti>? OboryCinnosti { get; set; }
 
     [JsonPropertyName("odpovedniZastupci")]
-    public List<OdpovedniZastupci> OdpovedniZastupci { get; set; }
+    public List<OdpovedniZastupci>? OdpovedniZastupci { get; set; }
 
     [JsonPropertyName("provozovny")]
-    public List<Provozovny> Provozovny { get; set; }
+    public List<Provozovny>? Provozovny { get; set; }
 }
 
 public class ZivnostiStav

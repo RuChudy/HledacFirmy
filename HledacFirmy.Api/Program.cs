@@ -39,18 +39,18 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // Test na funkcnost
-app.MapGet("/", () => "Hello World!").WithName("HelloWorld").WithTags("health").WithOpenApi();
+app.MapGet("/", () => "Hello World!").WithName("HelloWorld").WithTags("health");
 
 // Vyhledávač iča
-app.MapPost("/najdi-ico/{ico}", ApiPostNajdiIco).WithName("NajdiIco").WithTags("ico").Produces(404).Produces<FirmaDto>().WithOpenApi();
-app.MapGet("/ico/", UlozenaIca).WithName("UlozenaIca").WithTags("ico").Produces<IList<string>>().WithOpenApi();
+app.MapPost("/najdi-ico/{ico}", ApiPostNajdiIco).WithName("NajdiIco").WithTags("ico").Produces(404).Produces<FirmaDto>();
+app.MapGet("/ico/", UlozenaIca).WithName("UlozenaIca").WithTags("ico").Produces<IList<string>>();
 
 // Rss kanály
-app.MapGet("/rss/all", ApiGetAllRssSite).WithName("RssAll").WithTags("rss").Produces<IEnumerable<RssCachedSite>>().WithOpenApi();
-app.MapGet("/rss/feed/{id}", ApiGetRssFeed).WithName("RssFeed").WithTags("rss").Produces(404).Produces<Feed>().WithOpenApi();
-app.MapDelete("/rss/feed/{id}", ApiDeleteRssFeed).WithName("RssDeleteFeed").WithTags("rss").Produces(404).WithOpenApi();
-app.MapPost("/rss/feed", ApiPostAddOrUpdateRssSite).WithName("RssAddFeed").WithTags("rss").Produces<Feed>().WithOpenApi();
-app.MapPost("/rss/delmore", ApiPostDeleteRssFeedBatch).WithName("RssDeleteMoreFeeds").WithTags("rss").Produces(404).WithOpenApi();
+app.MapGet("/rss/all", ApiGetAllRssSite).WithName("RssAll").WithTags("rss").Produces<IEnumerable<RssCachedSite>>();
+app.MapGet("/rss/feed/{id}", ApiGetRssFeed).WithName("RssFeed").WithTags("rss").Produces(404).Produces<Feed>();
+app.MapDelete("/rss/feed/{id}", ApiDeleteRssFeed).WithName("RssDeleteFeed").WithTags("rss").Produces(404);
+app.MapPost("/rss/feed", ApiPostAddOrUpdateRssSite).WithName("RssAddFeed").WithTags("rss").Produces<Feed>();
+app.MapPost("/rss/delmore", ApiPostDeleteRssFeedBatch).WithName("RssDeleteMoreFeeds").WithTags("rss").Produces(404);
 
 app.Run();
 

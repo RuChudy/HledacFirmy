@@ -1,0 +1,93 @@
+﻿@using Hledac.Domain.Firma
+
+<div class="row">
+    <div class="col bd-example">
+        <div class="mb-3 row">
+            <label for="faIco" class="col-sm-2 col-form-label">Ič</label>
+            <div class="col-sm-10">
+                <input type="text" readonly="readonly" class="form-control-plaintext" id="faIco" value="@Firma?.Ico">
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label for="faJmeno" class="col-sm-2 col-form-label">Název</label>
+            <div class="col-sm-10">
+                <input type="text" readonly="readonly" class="form-control-plaintext" id="faJmeno" value="@Firma?.Jmeno">
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label for="faId" class="col-sm-2 col-form-label">Id</label>
+            <div class="col-sm-10">
+                <input type="text" readonly="readonly" class="form-control-plaintext" id="faId" value="@Firma?.Id">
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label for="faCreated" class="col-sm-2 col-form-label">Nalezeno dne</label>
+            <div class="col-sm-10">
+                <input type="text" readonly="readonly" class="form-control-plaintext" id="faCreated" value="@Firma?.Created">
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label for="faDic" class="col-sm-2 col-form-label">Dič</label>
+            <div class="col-sm-10">
+                <input type="text" readonly="readonly" class="form-control-plaintext" id="faDic" value="@Firma?.Dic">
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label for="faStat" class="col-sm-2 col-form-label">Stát</label>
+            <div class="col-sm-10">
+                <input type="text" readonly="readonly" class="form-control-plaintext" id="faStat" value="@Firma?.Stat">
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label for="faKraj" class="col-sm-2 col-form-label">Kraj</label>
+            <div class="col-sm-10">
+                <input type="text" readonly="readonly" class="form-control-plaintext" id="faKraj" value="@Firma?.Kraj">
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label for="faOkres" class="col-sm-2 col-form-label">Okres</label>
+            <div class="col-sm-10">
+                <input type="text" readonly="readonly" class="form-control-plaintext" id="faOkres" value="@Firma?.Okres">
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label for="faObec" class="col-sm-2 col-form-label">Obec</label>
+            <div class="col-sm-10"><input type="text" readonly class="form-control-plaintext" id="faObec" value="@Firma?.Obec"></div>
+        </div>
+        <div class="mb-3 row">
+            <label for="faObvod" class="col-sm-2 col-form-label">Obvod</label>
+            <div class="col-sm-10">
+                <input type="text" readonly="readonly" class="form-control-plaintext" id="faObvod" value="@Firma?.Obvod">
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label for="faUlice" class="col-sm-2 col-form-label">Ulice</label>
+            <div class="col-sm-10">
+                <input type="text" readonly="readonly" class="form-control-plaintext" id="faUlice" value="@Firma?.Ulice">
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label for="faCisloDomovni" class="col-sm-2 col-form-label">Číslo Domovní</label>
+            <div class="col-sm-10">
+                <input type="text" readonly="readonly" class="form-control-plaintext" id="faCisloDomovni" value="@Firma?.CisloDomovni">
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label for="faCisloOrientacni" class="col-sm-2 col-form-label">Číslo Orientační</label>
+            <div class="col-sm-10">
+                <input type="text" readonly="readonly" class="form-control-plaintext" id="faCisloOrientacni" value="@Firma?.CisloOrientacni">
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label for="faPscTxt" class="col-sm-2 col-form-label">Psč</label>
+            <div class="col-sm-10">
+                <input type="text" readonly="readonly" class="form-control-plaintext" id="faPscTxt" value="@Firma?.PscTxt">
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public FirmaDto? Firma { get; set; }
+}

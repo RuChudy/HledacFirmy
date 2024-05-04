@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Hledac.Domain\Hledac.Domain.csproj" />
-    <ProjectReference Include="..\HledacFirmy.LibUI\HledacFirmy.LibUI.csproj" />
   </ItemGroup>
 
 </Project>

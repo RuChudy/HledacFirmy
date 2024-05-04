@@ -1,12 +1,11 @@
-using HledacFirmy.Web.Components;
-using HledacFirmy.Web.Infrastructure;
-using Microsoft.Extensions.Configuration;
+using HledacFirmy.WebBlazorApp.Infrastructure;
+using HledacFirmy.WebBlazorApp.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
-.AddInteractiveServerComponents();
+    .AddInteractiveServerComponents();
 
 builder.Services.Configure<HledacFirmyOptions>(builder.Configuration.GetSection(HledacFirmyOptions.SectionName));
 builder.Services.AddHttpClient();

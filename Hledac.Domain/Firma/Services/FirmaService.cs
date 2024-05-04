@@ -64,7 +64,7 @@ public class FirmaService
             // Hledame v ARES
             _logger.LogDebug($"Databáze nemá ičo={hledaneIco}. Koukneme do ARES..");
 
-            var aresSubject = await _aresClient.NajdiEkonomickySubjektAsync(hledaneIco);
+            var aresSubject = await _aresClient.NactiEkonomickySubjektAsync(hledaneIco);
             if (aresSubject == null)
             {
                 _logger.LogDebug($"Ares {hledaneIco} není!");
@@ -72,7 +72,7 @@ public class FirmaService
             }
 
             // Ulozime do db
-            _logger.LogDebug($"Databáze přidáme nově ičo={hledaneIco} '{aresSubject.obchodniJmeno}'.");
+            _logger.LogDebug($"Databáze přidáme nově ičo={hledaneIco} '{aresSubject.ObchodniJmeno}'.");
             return UlozFirmaDoDatabaze(aresSubject) ?? throw new ArgumentNullException(nameof(FirmaDto));
         }
         else
@@ -105,28 +105,28 @@ public class FirmaService
     /// <returns>Zaznam o firme.</returns>
     private FirmaDto? UlozFirmaDoDatabaze(AresEkonomickySubjekt subjekt)
     {
-        if (subjekt == null || subjekt.ico == null || subjekt.obchodniJmeno == null)
+        if (subjekt == null || subjekt.Ico == null || subjekt.ObchodniJmeno == null)
             return null;
 
         Subjekt? dbRow = _db.SaveSubjekt(
-            subjekt.ico,
-            subjekt.dic,
-            subjekt.obchodniJmeno,
-            subjekt.sidlo?.nazevStatu,
-            subjekt.sidlo?.nazevKraje,
-            subjekt.sidlo?.nazevOkresu,
-            subjekt.sidlo?.nazevObce,
-            subjekt.sidlo?.nazevMestskeCastiObvodu,
-            subjekt.sidlo?.nazevUlice,
-            subjekt.sidlo?.cisloDomovni.ToString(),
-            subjekt.sidlo?.cisloOrientacni.ToString(),
-            subjekt.sidlo?.pscTxt,
-            subjekt.adresaDorucovaci?.radekAdresy1,
-            subjekt.adresaDorucovaci?.radekAdresy2,
-            subjekt.adresaDorucovaci?.radekAdresy3,
-            subjekt.datumVzniku,
-            subjekt.datumZaniku,
-            subjekt.datumAktualizace,
+            subjekt.Ico,
+            subjekt.Dic,
+            subjekt.ObchodniJmeno,
+            subjekt.Sidlo?.NazevStatu,
+            subjekt.Sidlo?.NazevKraje,
+            subjekt.Sidlo?.NazevOkresu,
+            subjekt.Sidlo?.NazevObce,
+            subjekt.Sidlo?.NazevMestskeCastiObvodu,
+            subjekt.Sidlo?.NazevUlice,
+            subjekt.Sidlo?.CisloDomovni.ToString(),
+            subjekt.Sidlo?.CisloOrientacni.ToString(),
+            subjekt.Sidlo?.PscTxt,
+            subjekt.AdresaDorucovaci?.RadekAdresy1,
+            subjekt.AdresaDorucovaci?.RadekAdresy2,
+            subjekt.AdresaDorucovaci?.RadekAdresy3,
+            subjekt.DatumVzniku,
+            subjekt.DatumZaniku,
+            subjekt.DatumAktualizace,
             null);
 
         if (dbRow == null)

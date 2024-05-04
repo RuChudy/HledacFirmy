@@ -41,10 +41,35 @@ public class AresHttpClient
     /// </summary>
     /// <param name="ico">Hledané ičo.</param>
     /// <returns>Podrobnosti firmy nebo null, pokud nenalezeno.</returns>
-    public async Task<AresEkonomickySubjekt?> NajdiEkonomickySubjektAsync(string ico)
+    public async Task<AresEkonomickySubjekt?> NactiEkonomickySubjektAsync(string ico)
     {
-        string restUri = string.Concat("ekonomicke-subjekty-v-be/rest/ekonomicke-subjekty/", ico);
+        Uri restUri = new Uri(string.Concat("ekonomicke-subjekty-v-be/rest/ekonomicke-subjekty/", ico), UriKind.Relative);
 
+        AresEkonomickySubjekt? subject = await FromJson<AresEkonomickySubjekt>(restUri);
+        if (subject is not null)
+            _logger.LogDebug($"ARES RZP Nalezeno ico={subject?.IcoId}.");
+
+        return subject;
+    }
+
+    /// <summary>
+    /// Najde v RZP firmu dle ičo.
+    /// </summary>
+    /// <param name="ico">Hledané ičo.</param>
+    /// <returns>Podrobnosti firmy nebo null, pokud nenalezeno.</returns>
+    public async Task<AresRZP?> NactiRZPAsync(string ico)
+    {
+        Uri restUri = new Uri(string.Concat("ekonomicke-subjekty-v-be/rest/ekonomicke-subjekty-rzp/", ico), UriKind.Relative);
+
+        AresRZP? result = await FromJson<AresRZP>(restUri);
+        if (result is not null)
+            _logger.LogDebug($"ARES RZP Nalezeno ico={result?.IcoId}.");
+
+        return result;
+    }
+
+    private async Task<T?> FromJson<T>(Uri restUri) where T : class, new()
+    {
         _logger.LogDebug($"ARES kontaktuji '{_httpClient.BaseAddress}{restUri}'..");
         using var httpResponseMessage = await _httpClient.GetAsync(restUri);
 
@@ -66,7 +91,8 @@ public class AresHttpClient
         {
             using Stream contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
 
-            AresEkonomickySubjekt? result = await JsonSerializer.DeserializeAsync<AresEkonomickySubjekt>(utf8Json: contentStream,
+            T? result = await JsonSerializer.DeserializeAsync<T>(
+                utf8Json: contentStream,
                 options: new JsonSerializerOptions
                 {
                     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
@@ -76,7 +102,6 @@ public class AresHttpClient
             if (result == null)
                 throw new HttpRequestException("HTTP Odpověď formát JSON nelze rekonstruovat.", null, HttpStatusCode.UnsupportedMediaType);
 
-            _logger.LogDebug($"ARES Nalezeno ico={result.ico} '{result.obchodniJmeno}'.");
             return result;
         }
         else
@@ -84,4 +109,5 @@ public class AresHttpClient
             throw new HttpRequestException("HTTP Odpověď byla neplatná a nelze ji rekonstruovat.", null, HttpStatusCode.UnsupportedMediaType);
         }
     }
+
 }

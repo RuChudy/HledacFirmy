@@ -42,9 +42,16 @@ public class AresTest
         Assert.IsInstanceOfType<AresHttpClient>(aresClient);
 
         string ceskaTelevizeIco = "00027383"; // ico?.PadLeft(8, '0')
-        AresEkonomickySubjekt? result = await aresClient.NajdiEkonomickySubjektAsync(ceskaTelevizeIco);
+        AresEkonomickySubjekt? result = await aresClient.NactiEkonomickySubjektAsync(ceskaTelevizeIco);
         Assert.IsNotNull(result);
-        Assert.IsInstanceOfType<RssRepositoryService>(result);
+
+        if (result?.SeznamRegistraci?.InRes() == true)
+            Assert.IsTrue(true);
+
+        if (result?.SeznamRegistraci?.InRzp() == true)
+        {
+            AresRZP? rzp = await aresClient.NactiRZPAsync(result.Ico ?? throw new ArgumentNullException(nameof(result.Ico)));
+        }
     }
 
     [TestMethod]
@@ -56,4 +63,31 @@ public class AresTest
         int ceskaTelevizeIco = 27_383;
         await firmaService.NajdiFirmuDleIcoNeboNullAsync(ceskaTelevizeIco.ToString());
     }
+
+    [TestMethod]
+    public async Task InsolvenceTest()
+    {
+        var aresClient = _host.Services.GetRequiredService<AresHttpClient>();
+        Assert.IsInstanceOfType<AresHttpClient>(aresClient);
+
+        string sroInsolvence = "25291441";
+        AresEkonomickySubjekt? result = await aresClient.NactiEkonomickySubjektAsync(sroInsolvence);
+        Assert.IsNotNull(result);
+
+        if (result?.SeznamRegistraci?.InIr() == true)
+        {
+
+        }
+
+        if (result?.SeznamRegistraci?.InRes() == true)
+        {
+            Assert.IsTrue(true);
+        }
+
+        if (result?.SeznamRegistraci?.InRzp() == true)
+        {
+            AresRZP? rzp = await aresClient.NactiRZPAsync(result.Ico ?? throw new ArgumentNullException(nameof(result.Ico)));
+        }
+    }
+
 }

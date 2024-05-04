@@ -1,4 +1,6 @@
 ﻿using Hledac.Database.Context;
+using Hledac.Domain.Ares;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Hledac.Domain.Firma;
 
@@ -34,6 +36,30 @@ internal static class FirmaDtoExtension
             DatumZaniku = subjekt.DatumZaniku,
             DatumAktualizace = subjekt.DatumAktualizace,
             Description = subjekt.Description,
+        };
+    }
+
+    public static FirmaReqestInfo ToFirmaReqest(this AresEkonomickySubjekt subject)
+    {
+        return new FirmaReqestInfo
+        {
+            OdpovedTyp = "",
+            AktualizaceDB = DateTime.Now,
+            DatumCasVypisu = DateTime.Now,
+            TypVypisu = "",
+            Ico = subject.Ico,
+            ObchodniFirma = "",
+            DatumZapisu = DateTime.Now,
+            MistoZapisu = "",
+            ZnackaZapisu = "",
+            Jmeno = "",
+            Prijmeni = "",
+            DatumNarozeni = DateTime.Now,
+            Error = ""
+
+//     public FirmaRequestStav? Stav = "",
+//    public FirmaRequestLegalForm? PravniForma { get; set; }
+//    public FirmaRequestAddress? Adresa { get; set; }
         };
     }
 }

@@ -54,9 +54,33 @@ namespace HledacFirmy.WebMvcApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> RssDelete([FromForm] int rssId, CancellationToken cancellation)
+        public async Task<IActionResult> RssDelete([FromForm] int? deleteRssId, [FromForm] string deleteBulk, CancellationToken cancellation)
         {
-            await _rss.DeleteAsync(rssId, cancellation);
+            int RequestIntValue(int i)
+            {
+                string key = string.Concat("val", i);
+                string? value = Request?.Form?[key];
+                if (value is null || !int.TryParse(value, out int id))
+                    throw new ArgumentNullException();
+                return id;
+            }
+
+            if ("true".Equals(deleteBulk, StringComparison.InvariantCulture))
+            {
+                List<string> keysToDelete = Request.Form.Keys.Where(k => k.StartsWith("bulk", StringComparison.InvariantCulture)).ToList();
+                if (keysToDelete.Count > 0)
+                {
+                    List<int> positionToDelete = keysToDelete.Select(s => int.Parse(s.Substring(4))).ToList();
+                    List<int> idvalues = positionToDelete.Select(i => RequestIntValue(i)).ToList();
+
+                    await _rss.BulkDeleteAsync(idvalues, cancellation);
+                }
+            }
+            else if (deleteRssId is not null)
+            {
+                await _rss.DeleteAsync(deleteRssId.Value, cancellation);
+            }
+
             return RedirectToAction("Index");
         }
 

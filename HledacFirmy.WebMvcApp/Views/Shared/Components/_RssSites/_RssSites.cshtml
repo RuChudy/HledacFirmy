@@ -1,11 +1,13 @@
 ﻿@using Hledac.Domain.Rss
 @model ICollection<RssCachedSite>?
-<form id="deleteRssSite" asp-controller="Home" asp-action="RssDelete" asp-route-returnUrl="@Context.Request.Path" method="post" role="form">
-<table id="datatableRssSites" class="table table-sm table-striped table-hover">
+
 @if (Model != null)
 {
+    <form id="deleteRssSite" asp-controller="Home" asp-action="RssDelete" asp-route-returnUrl="@Context.Request.Path" method="post" role="form">
+    <table id="datatableRssSites" class="table table-sm table-striped table-hover">
     <thead>
         <tr>
+            <th></th>
             <th>Db Id</th>
             <th>Název</th>
             <th>Zdroj</th>
@@ -15,18 +17,25 @@
     @if (Model?.Count > 0)
     {
         <tbody>
+            @{ int position = 0; }
             @foreach (var site in Model)
             {
                 string srcUri = (site.Site?.Uri ?? string.Empty).Trim();
                 <tr>
+                    <td>
+                        <input type="checkbox" id='@(string.Concat("batchDelete", position))' name='@(string.Concat("bulk", position))' />
+                        <input type="hidden" id='@(string.Concat("batchValue", position))' name='@(string.Concat("val", position))' value="@site.Id" />
+                    </td>
                     <td>@site.Id</td>
                     <td><a asp-controller="Home" asp-action="Feed" asp-route-id="@site.Id">@site.Title</a></td>
                     <td><a href="@srcUri"><small>@srcUri</small></a></td>
-                    <td><button type="submit" name="rssId" value="@site.Id" class="btn btn-outline-danger btn-sm">Smazat</button></td>
+                    <td><button type="submit" id="deleteRssSubmit" name="deleteRssId" value="@site.Id" class="btn btn-outline-danger btn-sm">Smazat</button></td>
                 </tr>
+                position++;
             }
         </tbody>
     }
+    </table>
+    <button type="submit" id="deleteRssBulkSubmit" name="deleteBulk" value="true" class="btn btn-danger btn-sm">Smazat vybranné</button>
+    </form>
 }
-</table>
-</form>

@@ -7,4 +7,19 @@
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 
+<form method="post" class="row ms-auto" asp-controller="Home" asp-action="RssCreate" name="InsertRssForm">
+    <AntiforgeryToken />
+    <div class="row g-3 align-items-center">
+        <div class="col-auto">
+            <label for="Uri">Nový rss:</label>
+        </div>
+        <div class="col">
+            <input type="text" class="form-control mb-2 mr-sm-2" name="rssUri" />
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-2">Přidat</button>
+        </div>
+    </div>
+</form>
+
 @(await Component.InvokeAsync("_RssSites"))

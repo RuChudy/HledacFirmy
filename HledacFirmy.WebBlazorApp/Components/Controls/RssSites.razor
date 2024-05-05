@@ -1,4 +1,5 @@
 ﻿@using Hledac.Domain.Rss
+@inject NavigationManager _navigationManager
 
 @if (Sites is not null && Sites.Any())
 {
@@ -14,10 +15,9 @@
             @foreach (var site in Sites)
             {
                 string? linkToWeb = (site.Site?.Uri ?? "").Trim();
-
                 <tr>
                     <td>@site.Id</td>
-                    <td>@site.Title</td>
+                    <td><button class="btn btn-link" type="button" @onclick="() => ToRssFeed(site.Id)">@site.Title</button></td>
                     <td>
                     @if (linkToWeb.Length > 0)
                     {
@@ -33,4 +33,6 @@
 @code {
     [Parameter]
     public IEnumerable<RssCachedSite>? Sites { get; set; }
+
+    private void ToRssFeed(int rssId) => _navigationManager.NavigateTo(string.Concat("rss/", rssId));
 }

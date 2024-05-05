@@ -10,4 +10,10 @@
     <ProjectReference Include="..\Hledac.Domain\Hledac.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Components\Pages\RssFeed.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+  </ItemGroup>
+
 </Project>

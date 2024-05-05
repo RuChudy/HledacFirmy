@@ -1,0 +1,48 @@
+﻿@using System.Net
+@using System.Text.Json
+@using System.Text.Json.Serialization
+@using Microsoft.Extensions.Options
+@using Hledac.Domain.Rss
+@using HledacFirmy.WebBlazorApp.Infrastructure
+@using HledacFirmy.WebBlazorApp.Components.Controls
+
+@page "/Rss/{Id:int}"
+@rendermode InteractiveServer
+@inject IOptions<RssApiOptions> _options
+@inject IHttpClientFactory _clientFactory
+
+<PageTitle>Rss Feed</PageTitle>
+
+<h3><small>Rss Feed</small> @_feed?.Title</h3>
+
+@code {
+    /*
+        public string? Description { get; set; }
+        public Uri? Link { get; set; }
+        public string? Title { get; set; }
+        public string? Copyright { get; set; }
+    */
+
+
+    [Parameter]
+    public int Id { get; set; }
+
+    private Feed? _feed;
+
+    protected override async Task OnInitializedAsync()
+    {
+        string baseUri = _options.Value?.Uri ?? throw new ArgumentNullException(nameof(RssApiOptions.Uri));
+
+        using var client = _clientFactory.CreateClient();
+        client.BaseAddress = new Uri(baseUri, UriKind.Absolute);
+        client.DefaultRequestHeaders.Add("Accept", "application/json");
+        client.DefaultRequestHeaders.Add("User-Agent", "-WebClient");
+
+        using var request = new HttpRequestMessage(HttpMethod.Get, string.Concat("feed/", Id));
+        using var response = await client.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+
+        using var responseStream = await response.Content.ReadAsStreamAsync();
+        _feed = await JsonSerializer.DeserializeAsync<Feed>(responseStream, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+    }
+}

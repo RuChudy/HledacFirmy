@@ -1,6 +1,4 @@
-﻿@page "/Rss"
-@attribute [StreamRendering]
-@using System.Net
+﻿@using System.Net
 @using System.Text.Json
 @using System.Text.Json.Serialization
 @using Microsoft.Extensions.Options
@@ -8,6 +6,8 @@
 @using HledacFirmy.WebBlazorApp.Infrastructure
 @using HledacFirmy.WebBlazorApp.Components.Controls
 
+@page "/Rss"
+@rendermode InteractiveServer
 @inject IOptions<RssApiOptions> _options
 @inject IHttpClientFactory _clientFactory
 @inject NavigationManager _navigationManager

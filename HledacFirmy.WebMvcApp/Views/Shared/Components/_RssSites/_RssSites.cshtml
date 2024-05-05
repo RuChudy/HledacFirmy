@@ -7,7 +7,7 @@
     <table id="datatableRssSites" class="table table-sm table-striped table-hover">
     <thead>
         <tr>
-            <th></th>
+            <th><input type="checkbox" onClick="toggle(this)" /></th>
             <th>Db Id</th>
             <th>Název</th>
             <th>Zdroj</th>
@@ -23,7 +23,7 @@
                 string srcUri = (site.Site?.Uri ?? string.Empty).Trim();
                 <tr>
                     <td>
-                        <input type="checkbox" id='@(string.Concat("batchDelete", position))' name='@(string.Concat("bulk", position))' />
+                        <input type="checkbox" id='@(string.Concat("batchDelete", position))' name='@(string.Concat("bulk", position))' class="j-bulk-check" />
                         <input type="hidden" id='@(string.Concat("batchValue", position))' name='@(string.Concat("val", position))' value="@site.Id" />
                     </td>
                     <td>@site.Id</td>
@@ -39,3 +39,13 @@
     <button type="submit" id="deleteRssBulkSubmit" name="deleteBulk" value="true" class="btn btn-danger btn-sm">Smazat vybranné</button>
     </form>
 }
+<script type="text/javascript">
+    //<![CDATA[
+    function toggle(source) {
+        checkboxes = document.getElementsByClassName('j-bulk-check');
+        for (var i = 0, n = checkboxes.length; i < n; i++) {
+            checkboxes[i].checked = source.checked;
+        }
+    }
+    //]]>
+</script>

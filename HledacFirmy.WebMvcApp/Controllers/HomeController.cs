@@ -53,6 +53,13 @@ namespace HledacFirmy.WebMvcApp.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> RssDelete([FromForm] int rssId, CancellationToken cancellation)
+        {
+            await _rss.DeleteAsync(rssId, cancellation);
+            return RedirectToAction("Index");
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

@@ -22,7 +22,7 @@
 }
 else
 {
-    <RssSites Sites="@_rssSites"></RssSites>
+    <RssSites Sites="@_rssSites" OnDelete="OnDeteteFeed"></RssSites>
 }
 
 @code {
@@ -63,6 +63,17 @@ else
         using var responseStream = await response.Content.ReadAsStreamAsync();
         var feed = await JsonSerializer.DeserializeAsync<Feed>(responseStream, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-        _navigationManager.NavigateTo("/Rss");
+        _navigationManager.NavigateTo("/Rss", true);
+    }
+
+    protected async Task OnDeteteFeed(int feedId)
+    {
+        using var client = GetHttpClient();
+
+        using var request = new HttpRequestMessage(HttpMethod.Delete, String.Concat("feed/", feedId));
+        using var response = await client.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+
+        _navigationManager.NavigateTo("/Rss", true);
     }
 }

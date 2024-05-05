@@ -7,8 +7,9 @@
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Title</th>
+                <th>Titulek</th>
                 <th>Url</th>
+                <th>Akce</th>
             </tr>
         </thead>
         <tbody>
@@ -17,13 +18,14 @@
                 string? linkToWeb = (site.Site?.Uri ?? "").Trim();
                 <tr>
                     <td>@site.Id</td>
-                    <td><button class="btn btn-link" type="button" @onclick="() => ToRssFeed(site.Id)">@site.Title</button></td>
+                    <td><button type="button" class="btn btn-link" @onclick="() => ToRssFeed(site.Id)">@site.Title</button></td>
                     <td>
                     @if (linkToWeb.Length > 0)
                     {
                         <small><a href="@linkToWeb">@linkToWeb</a></small>
                     }
                     </td>
+                    <td><button type="button" class="btn btn-outline-danger btn-sm" @onclick="async () => DeleteRssFeed(site.Id)">Smazat</button></td>
                 </tr>
             }
         </tbody>
@@ -34,5 +36,10 @@
     [Parameter]
     public IEnumerable<RssCachedSite>? Sites { get; set; }
 
+    [Parameter]
+    public EventCallback<int> OnDelete { get; set; }
+
     private void ToRssFeed(int rssId) => _navigationManager.NavigateTo(string.Concat("rss/", rssId));
+
+    private async void DeleteRssFeed(int rssId) => await OnDelete.InvokeAsync(rssId);
 }

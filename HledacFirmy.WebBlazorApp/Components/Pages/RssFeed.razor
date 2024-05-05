@@ -12,18 +12,34 @@
 @inject IHttpClientFactory _clientFactory
 
 <PageTitle>Rss Feed</PageTitle>
+@if (_feed is not null)
+{
+    <div class="p-4 p-md-5 mb-4 text-white rounded bg-dark">
+        <div class="col-md-6 px-0">
+            <h1 class="display-4 fst-italic">@_feed.Title</h1>
+            <p class="lead my-3">@_feed.Description</p>
+            <p class="lead mb-0"><a href="@_feed.Link" class="text-white fw-bold">Zdroj...</a></p>
+        </div>
+    </div>
 
-<h3><small>Rss Feed</small> @_feed?.Title</h3>
+    @foreach(var feeditem in _feed.Items)
+    {
+        <div class="row mb-2">
+            <div class="col-md-12">
+                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                    <div class="col p-4 d-flex flex-column position-static">
+                        <strong class="d-inline-block mb-2 text-primary">@(string.Join(", ", feeditem.Categories))</strong>
+                        <div class="mb-1 text-muted">@feeditem.PublishDate?.ToLongDateString()</div>
+                        <p class="card-text mb-auto">@feeditem.Body</p>
+                        <a href="@feeditem.Link" class="stretched-link">Číst ve zdroji...</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
 
 @code {
-    /*
-        public string? Description { get; set; }
-        public Uri? Link { get; set; }
-        public string? Title { get; set; }
-        public string? Copyright { get; set; }
-    */
-
-
     [Parameter]
     public int Id { get; set; }
 

@@ -1,0 +1,30 @@
+﻿@using Hledac.Domain.Rss
+@model Feed?
+<table id="datatableRssSites" class="table table-sm table-striped table-hover">
+@if (Model is not null)
+{
+    <div class="p-4 p-md-5 mb-4 text-white rounded bg-dark">
+        <div class="col-md-6 px-0">
+            <h1 class="display-4 fst-italic">@Model.Title</h1>
+            <p class="lead my-3">@Model.Description</p>
+            <p class="lead mb-0"><a href="@Model.Link" class="text-white fw-bold">Zdroj...</a></p>
+        </div>
+    </div>
+
+    @foreach (var feeditem in Model.Items)
+    {
+        <div class="row mb-2">
+            <div class="col-md-12">
+                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                    <div class="col p-4 d-flex flex-column position-static">
+                        <strong class="d-inline-block mb-2 text-primary">@(string.Join(", ", feeditem.Categories))</strong>
+                        <div class="mb-1 text-muted">@feeditem.PublishDate?.ToLongDateString()</div>
+                        <p class="card-text mb-auto">@feeditem.Body</p>
+                        <a href="@feeditem.Link" class="stretched-link">Číst ve zdroji...</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+</table>

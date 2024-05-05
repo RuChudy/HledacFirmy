@@ -1,0 +1,35 @@
+﻿@using Hledac.Domain.Rss
+@model ICollection<RssCachedSite>?
+<table id="datatableRssSites" class="table table-sm table-striped table-hover">
+@if (Model != null)
+{
+    <thead>
+        <tr>
+            <th>Db Id</th>
+            <th>Název</th>
+            <th>Zdroj</th>
+            <th>Akce</th>
+        </tr>
+    </thead>
+    @if (Model?.Count > 0)
+    {
+        <tbody>
+            @foreach (var site in Model)
+            {
+                string srcUri = (site.Site?.Uri ?? string.Empty).Trim();
+                <tr>
+                    <td>@site.Id</td>
+                    <td><a asp-controller="Home" asp-action="Feed" asp-route-id="@site.Id">@site.Title</a></td>
+                    <td><a href="@srcUri"><small>@srcUri</small></a></td>
+                    <td><a asp-controller="Home" asp-action="Sorter" asp-route-id="@site.Id">Smazat</a></td>
+                </tr>
+            }
+        </tbody>
+    }
+}
+</table>
+<script type="text/javascript">
+    //<![CDATA[
+    /* document.addEventListener('DOMContentLoaded', function () { updateTableForSend(); }); */
+    //]]>
+</script>

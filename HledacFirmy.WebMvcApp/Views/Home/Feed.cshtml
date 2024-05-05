@@ -1,0 +1,5 @@
+﻿@model int?
+@{
+    ViewData["Title"] = "Rss Kanál";
+}
+@(await Component.InvokeAsync("_RssItems", Model))

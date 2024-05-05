@@ -1,9 +1,68 @@
 ﻿@page "/Rss"
+@attribute [StreamRendering]
+@using System.Net
+@using System.Text.Json
+@using System.Text.Json.Serialization
+@using Microsoft.Extensions.Options
+@using Hledac.Domain.Rss
+@using HledacFirmy.WebBlazorApp.Infrastructure
+@using HledacFirmy.WebBlazorApp.Components.Controls
+
+@inject IOptions<RssApiOptions> _options
+@inject IHttpClientFactory _clientFactory
+@inject NavigationManager _navigationManager
 
 <PageTitle>Rss</PageTitle>
 
 <h3>Rss</h3>
+<RssAdd OnInsert="OnInsertNew" />
+@if (_rssSites is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <RssSites Sites="@_rssSites"></RssSites>
+}
 
 @code {
+    private List<RssCachedSite>? _rssSites;
 
+    private HttpClient GetHttpClient()
+    {
+        string baseUri = _options.Value?.Uri ?? throw new ArgumentNullException(nameof(RssApiOptions.Uri));
+
+        HttpClient client = _clientFactory.CreateClient();
+        client.BaseAddress = new Uri(baseUri, UriKind.Absolute);
+        client.DefaultRequestHeaders.Add("Accept", "application/json");
+        client.DefaultRequestHeaders.Add("User-Agent", "-WebClient");
+        return client;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var client = GetHttpClient();
+        using var request = new HttpRequestMessage(HttpMethod.Get, "all");
+        using var response = await client.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+
+        using var responseStream = await response.Content.ReadAsStreamAsync();
+        _rssSites = await JsonSerializer.DeserializeAsync<List<RssCachedSite>>(responseStream, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+    }
+
+    protected async Task OnInsertNew(string url)
+    {
+        using var client = GetHttpClient();
+
+        using var request = new HttpRequestMessage(HttpMethod.Post, "feed");
+        request.Content = JsonContent.Create(new { Uri = url });
+
+        using var response = await client.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+
+        using var responseStream = await response.Content.ReadAsStreamAsync();
+        var feed = await JsonSerializer.DeserializeAsync<Feed>(responseStream, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+        _navigationManager.NavigateTo("/Rss");
+    }
 }

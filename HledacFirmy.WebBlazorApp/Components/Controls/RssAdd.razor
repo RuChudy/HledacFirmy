@@ -1,0 +1,32 @@
+﻿@using Hledac.Domain.Rss
+
+<form method="post" class="row ms-auto" @onsubmit="InsertRssForm_Submit" @formname="InsertRssForm">
+    <AntiforgeryToken />
+    <div class="col-auto">
+        <label for="Uri">Nový rss:</label>
+    </div>
+    <div class="col">
+        <InputText class="form-control mb-2 mr-sm-2" DisplayName="Uri" @bind-Value="Model!.Uri" />
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary mb-2">Přidat</button>
+    </div>
+</form>
+
+@code {
+    [SupplyParameterFromForm]
+    public SiteAdd Model { get; set; } = new SiteAdd();
+
+    [Parameter]
+    public EventCallback<string> OnInsert { get; set; }
+
+    private async Task InsertRssForm_Submit()
+    {
+        await OnInsert.InvokeAsync(Model.Uri);
+    }
+
+    public class SiteAdd
+    {
+        public string Uri { get; set; } = String.Empty;
+    }
+}

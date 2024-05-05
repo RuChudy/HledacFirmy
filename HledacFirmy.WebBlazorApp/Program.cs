@@ -8,6 +8,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.Configure<HledacFirmyOptions>(builder.Configuration.GetSection(HledacFirmyOptions.SectionName));
+builder.Services.Configure<RssApiOptions>(builder.Configuration.GetSection(RssApiOptions.SectionName));
 builder.Services.AddHttpClient();
 
 var app = builder.Build();

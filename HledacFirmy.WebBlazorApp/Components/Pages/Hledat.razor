@@ -71,7 +71,6 @@
             return;
         }
 
-
         string baseUri = _options.Value?.Uri ?? throw new ArgumentNullException(nameof(HledacFirmyOptions.Uri));
 
         var request = new HttpRequestMessage(HttpMethod.Post, String.Concat(baseUri, Model?.Ic?.ToString()));

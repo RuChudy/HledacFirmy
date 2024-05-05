@@ -1,0 +1,36 @@
+﻿@using Hledac.Domain.Rss
+
+@if (Sites is not null && Sites.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Url</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var site in Sites)
+            {
+                string? linkToWeb = (site.Site?.Uri ?? "").Trim();
+
+                <tr>
+                    <td>@site.Id</td>
+                    <td>@site.Title</td>
+                    <td>
+                    @if (linkToWeb.Length > 0)
+                    {
+                        <small><a href="@linkToWeb">@linkToWeb</a></small>
+                    }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    [Parameter]
+    public IEnumerable<RssCachedSite>? Sites { get; set; }
+}

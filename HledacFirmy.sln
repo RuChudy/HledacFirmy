@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.34607.79
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HledacFirmy.Web", "HledacFirmy.Web\HledacFirmy.Web.csproj", "{C96B5557-5169-492F-8A2D-5D0990E76075}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hledac.Database", "Hledac.Database\Hledac.Database.csproj", "{79903A0A-B70D-4BDF-932F-8D1B030DD917}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HledacFirmy.Api", "HledacFirmy.Api\HledacFirmy.Api.csproj", "{BE60EA7F-0B9A-466D-866C-29C99C82A399}"
@@ -19,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HledacFirmy.LibUI", "Hledac
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hledac.TestProject", "Hledac.TestProject\Hledac.TestProject.csproj", "{E2B15D34-D55B-4E35-AD76-B6D1D60A4C0A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HledacFirmy.WebBlazorApp", "HledacFirmy.WebBlazorApp\HledacFirmy.WebBlazorApp.csproj", "{E0B85FF7-B596-435C-8723-E9FBE429C2A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HledacFirmy.WebBlazorApp", "HledacFirmy.WebBlazorApp\HledacFirmy.WebBlazorApp.csproj", "{E0B85FF7-B596-435C-8723-E9FBE429C2A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,10 +25,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C96B5557-5169-492F-8A2D-5D0990E76075}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C96B5557-5169-492F-8A2D-5D0990E76075}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C96B5557-5169-492F-8A2D-5D0990E76075}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C96B5557-5169-492F-8A2D-5D0990E76075}.Release|Any CPU.Build.0 = Release|Any CPU
 		{79903A0A-B70D-4BDF-932F-8D1B030DD917}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{79903A0A-B70D-4BDF-932F-8D1B030DD917}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{79903A0A-B70D-4BDF-932F-8D1B030DD917}.Release|Any CPU.ActiveCfg = Release|Any CPU

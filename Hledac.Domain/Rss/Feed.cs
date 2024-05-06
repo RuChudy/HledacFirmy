@@ -7,6 +7,7 @@ namespace Hledac.Domain.Rss;
 /// <summary>Feed object which maps to 'channel' property on Feed.Serialize()</summary>
 public class Feed
 {
+    public int Id { get; set; }
     public string? Description { get; set; }
     public Uri? Link { get; set; }
     public string? Title { get; set; }

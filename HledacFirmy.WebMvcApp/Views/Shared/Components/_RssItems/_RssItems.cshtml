@@ -3,13 +3,16 @@
 
 @if (Model is not null)
 {
+    <form id="updateRssSite" asp-controller="Home" asp-action="RssUpdate" method="post" role="form">
     <div class="p-4 p-md-5 mb-4 text-white rounded bg-dark">
         <div class="col-md-12 px-0">
             <h1 class="display-4 fst-italic">@Model.Title</h1>
             <p class="lead my-3">@Model.Description</p>
             <p class="lead mb-0"><a href="@Model.Link" class="text-white fw-bold">Zdroj...</a></p>
         </div>
+        <button type="submit" id="updateRssSiteRssSubmit" name="updateRssId" value="@Model.Id" class="btn btn-light float-end">Aktualizovat</button>
     </div>
+    </form>
 
     @foreach (var feeditem in Model.Items)
     {

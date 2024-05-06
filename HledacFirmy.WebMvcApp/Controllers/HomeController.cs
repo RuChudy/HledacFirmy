@@ -65,6 +65,25 @@ namespace HledacFirmy.WebMvcApp.Controllers
         }
 
         /// <summary>
+        /// Aktualizuje rss kanál.
+        /// </summary>
+        /// <param name="rssUri">Id rss kanálu k aktualizaci.</param>
+        /// <param name="cancellation">Zastavení.</param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> RssUpdate([FromForm] int updateRssId, CancellationToken cancellation)
+        {
+            RssCachedSite? site = await _rss.GetSiteByIdAsync(updateRssId, cancellation);
+            if (site is not null)
+            {
+                Feed? actualFeed = await _reader.GetFeedsAsync(site.Site, cancellation);
+                await _rss.AddOrUpdateAsync(site.Site, actualFeed, cancellation);
+            }
+
+            return RedirectToAction("feed", new { id = updateRssId });
+        }
+
+        /// <summary>
         /// Smaže jeden nebo více rss kanálů.
         /// </summary>
         /// <param name="deleteRssId">Id jednoho kanálu nebo null.</param>

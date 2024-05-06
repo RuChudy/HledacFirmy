@@ -170,6 +170,25 @@ public class RssRepositoryService : IRssRepositoryService
     }
 
     /// <summary>
+    /// Nesmazaný klíč Rss webu v databázi podle Id.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="cancellation">Zastavení.</param>
+    /// <returns>Klíč Rss webu v datbázi nebo null.</returns>
+    public async Task<RssCachedSite?> GetSiteByIdAsync(int id, CancellationToken cancellation)
+    {
+        return await _db.RssCacheFeeds
+            .Where(x => x.Id == id && x.Deleted == null)
+            .Select(x => new RssCachedSite
+            {
+                Id = x.Id,
+                Title = x.Title ?? x.SiteUri,
+                Site = new RssSiteUri { Uri = x.SiteUri }
+            })
+            .SingleOrDefaultAsync(cancellation);
+    }
+
+    /// <summary>
     /// Načte Rss kanál uložený v db dle Id.
     /// </summary>
     /// <param name="id">Id rss kanálu.</param>
@@ -191,6 +210,7 @@ public class RssRepositoryService : IRssRepositoryService
 
         return new Feed
         {
+            Id = dataRow.Id,
             Link = ToUri(dataRow.Link),
             Title = dataRow.Title,
             Language = dataRow.Language ?? "en",

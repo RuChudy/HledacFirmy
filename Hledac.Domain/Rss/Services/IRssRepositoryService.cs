@@ -12,12 +12,20 @@ public interface IRssRepositoryService
     Task<ICollection<RssCachedSite>> GetAllSitesAsync(int position, int rows, CancellationToken cancellation = default);
 
     /// <summary>
-    /// Klíč nesmazaného Rss webu v datbázi.
+    /// Klíč nesmazaného Rss webu v databázi.
     /// </summary>
     /// <param name="rssSite"></param>
     /// <param name="cancellation">Zastavení.</param>
     /// <returns>Klíč Rss webu v datbázi nebo null.</returns>
     Task<RssCachedSite?> GetSiteAsync(RssSiteUri rssSite, CancellationToken cancellation = default);
+
+    /// <summary>
+    /// Nesmazaný klíč Rss webu v databázi podle Id.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="cancellation">Zastavení.</param>
+    /// <returns>Klíč Rss webu v datbázi nebo null.</returns>
+    Task<RssCachedSite?> GetSiteByIdAsync(int id, CancellationToken cancellation = default);
 
     /// <summary>
     /// Načte Rss kanál uložený v db dle Id.

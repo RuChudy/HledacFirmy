@@ -1,4 +1,4 @@
-using Hledac.Database;
+﻿using Hledac.Database;
 using Hledac.Database.Context;
 using Hledac.Domain.Rss.Services;
 using Microsoft.EntityFrameworkCore;
@@ -11,12 +11,13 @@ builder.Services.AddControllersWithViews();
 builder.Services.Configure<ConnectionStrings>(builder.Configuration.GetSection("ConnectionStrings"));
 builder.Services.Configure<RssSettings>(builder.Configuration.GetSection(RssSettings.SectionName));
 
+// Zaregistrujeme databazi
 builder.Services.AddDbContext<SubjektDbContext>(options => options.UseSqlServer("name=ConnectionStrings:DefaultConnection"));
 
+// Zaregistrujeme Rss reader a repository
 builder.Services.AddHttpClient<RssHttpClient>();
 builder.Services.AddScoped<IRssReaderService, RssReaderService>();
 builder.Services.AddScoped<IRssRepositoryService, RssRepositoryService>();
-
 
 var app = builder.Build();
 

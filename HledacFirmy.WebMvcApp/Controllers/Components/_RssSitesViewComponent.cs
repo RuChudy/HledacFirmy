@@ -25,7 +25,7 @@ public class _RssSitesViewComponent : ViewComponent
     }
 
     /// <summary>
-    /// Vykresli kontrol.
+    /// Vykresli kontrol - Seznam Rss kanálů.
     /// </summary>
     /// <returns>Výsledek.</returns>
     public async Task<IViewComponentResult> InvokeAsync(CancellationToken cancel)

@@ -54,19 +54,21 @@ app.MapPost("/rss/delmore", ApiPostDeleteRssFeedBatch).WithName("RssDeleteMoreFe
 
 app.Run();
 
+/// <summary>Najde IC v databázi, pokud neni nacte z ARES a uloží.</summary>
 static async Task<IResult> ApiPostNajdiIco(string ico, FirmaService fs)
 {
     var firma = await fs.NajdiFirmuDleIcoNeboNullAsync(ico);
     return (firma == null) ? TypedResults.NotFound() : TypedResults.Ok(firma);
 }
 
+/// <summary>Seznam uložených IC v databázi.</summary>
 static async Task<IResult> UlozenaIca(FirmaService fs)
 {
     var seznamIc = await fs.UlozenaIca();
     return TypedResults.Ok(seznamIc);
 }
 
-
+/// <summary>Přidá další nebo aktualizuje existující rss kanál.</summary>
 static async Task<IResult> ApiPostAddOrUpdateRssSite([FromBody] RssSiteUri rssUri, IRssRepositoryService rssRepository, IRssReaderService rssReader, CancellationToken cancellation)
 {
     ArgumentNullException.ThrowIfNull(rssUri?.Uri);
@@ -89,25 +91,28 @@ static async Task<IResult> ApiPostAddOrUpdateRssSite([FromBody] RssSiteUri rssUr
     return TypedResults.Ok(result);
 }
 
+/// <summary>Načte seznam všech rss kanálů.</summary>
 static async Task<IResult> ApiGetAllRssSite(IRssRepositoryService rssRepository, CancellationToken cancellation)
 {
     var sites = await rssRepository.GetAllSitesAsync(0, short.MaxValue, cancellation);
     return TypedResults.Ok(sites);
 }
 
+/// <summary>Načte detail rss kanálu se zprávami.</summary>
 static async Task<IResult> ApiGetRssFeed(int id, IRssRepositoryService rssRepository, CancellationToken cancellation)
 {
     var feed = await rssRepository.GetFeedByIdAsync(id, cancellation);
     return (feed == null) ? TypedResults.NotFound() : TypedResults.Ok(feed);
 }
 
+/// <summary>Označí rss kanál jako smazaný.</summary>
 static async Task<IResult> ApiDeleteRssFeed(int id, IRssRepositoryService rssRepository, CancellationToken cancellation)
 {
     return (await rssRepository.DeleteAsync(id, cancellation) == true) ? TypedResults.Ok() : TypedResults.NotFound();
 }
 
+/// <summary>Označí několik rss kanál jako smazané.</summary>
 static async Task<IResult> ApiPostDeleteRssFeedBatch(IEnumerable<int> id, IRssRepositoryService rssRepository, CancellationToken cancellation)
 {
     return (await rssRepository.BulkDeleteAsync(id, cancellation) > 0) ? TypedResults.Ok() : TypedResults.NotFound();
 }
-

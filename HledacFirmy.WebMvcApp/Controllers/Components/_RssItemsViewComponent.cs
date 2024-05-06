@@ -39,7 +39,7 @@ public class _RssItemsViewComponent : ViewComponent
         catch (Exception ex)
         {
             _logger.LogError(ex, "Get GetFeedByIdAsync fail.");
-            return View("_RssError", ex.Message);
+            return View("_ItemsError", ex.Message);
         }
     }
 }

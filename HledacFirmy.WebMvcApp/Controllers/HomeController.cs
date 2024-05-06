@@ -1,4 +1,4 @@
-using Hledac.Domain.Rss;
+﻿using Hledac.Domain.Rss;
 using Hledac.Domain.Rss.Services;
 using HledacFirmy.WebMvcApp.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -29,12 +29,23 @@ namespace HledacFirmy.WebMvcApp.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Zobrazí detail feedu se zprávami.
+        /// </summary>
+        /// <param name="id">Id kanálu v databázi.</param>
+        /// <returns>Detail kanálu s feedy.</returns>
         [Route("feed/{id}")]
         public IActionResult Feed([FromRoute] int id)
         {
             return View("Feed", id);
         }
 
+        /// <summary>
+        /// Přidá další rss kanál.
+        /// </summary>
+        /// <param name="rssUri">Odkaz na zdroj rss kanálu.</param>
+        /// <param name="cancellation">Zastavení.</param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RssCreate([FromForm] string rssUri, CancellationToken cancellation)
@@ -53,36 +64,57 @@ namespace HledacFirmy.WebMvcApp.Controllers
             return RedirectToAction("Index");
         }
 
+        /// <summary>
+        /// Smaže jeden nebo více rss kanálů.
+        /// </summary>
+        /// <param name="deleteRssId">Id jednoho kanálu nebo null.</param>
+        /// <param name="deleteBulk">Seznam Id kanálů nebo null.</param>
+        /// <param name="cancellation">Zastavení.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         [HttpPost]
-        public async Task<IActionResult> RssDelete([FromForm] int? deleteRssId, [FromForm] string deleteBulk, CancellationToken cancellation)
+        public async Task<IActionResult> RssDelete([FromForm] int? deleteRssId, [FromForm] string deleteBulk, IFormCollection formData, CancellationToken cancellation)
         {
-            int RequestIntValue(int i)
-            {
-                string key = string.Concat("val", i);
-                string? value = Request?.Form?[key];
-                if (value is null || !int.TryParse(value, out int id))
-                    throw new ArgumentNullException();
-                return id;
-            }
-
+            // pokud je hodnota deleteBulk true mazeme seznam zaskrtnutych rss kanalu.
             if ("true".Equals(deleteBulk, StringComparison.InvariantCulture))
             {
-                List<string> keysToDelete = Request.Form.Keys.Where(k => k.StartsWith("bulk", StringComparison.InvariantCulture)).ToList();
-                if (keysToDelete.Count > 0)
+                // seznam vsech pozic kde je zaskrtnuty checkbox.
+                List<int> posToDelete = FormDataKeysStartWith(formData, "bulk");
+                if (posToDelete.Count > 0)
                 {
-                    List<int> positionToDelete = keysToDelete.Select(s => int.Parse(s.Substring(4))).ToList();
-                    List<int> idvalues = positionToDelete.Select(i => RequestIntValue(i)).ToList();
+                    // seznam id-cek ke smazani.
+                    List<int> idRssFeeds = posToDelete.Select(i => FormDataReadIntValueFrom(formData, string.Concat("val", i))).ToList();
 
-                    await _rss.BulkDeleteAsync(idvalues, cancellation);
+                    await _rss.BulkDeleteAsync(idRssFeeds, cancellation);
                 }
             }
             else if (deleteRssId is not null)
             {
+                // pokud je vyplnena hodnota deleteRssId mazeme jen jeden rss kanal
                 await _rss.DeleteAsync(deleteRssId.Value, cancellation);
             }
 
             return RedirectToAction("Index");
         }
+
+        /// <summary>Seznam pozic klíčů, které začínají na text.</summary>
+        private static List<int> FormDataKeysStartWith(IFormCollection formData, string startWith)
+        {
+            return formData.Keys
+                .Where(k => k.StartsWith(startWith, StringComparison.InvariantCulture))
+                .Select(k => int.Parse(k.Substring(startWith.Length)))
+                .ToList();
+        }
+
+        /// <summary>Hodnota typu int zaslaná ve formuláři.</summary>
+        private static int FormDataReadIntValueFrom(IFormCollection formData, string key)
+        {
+            string? value = formData[key];
+            if (value is null || !int.TryParse(value, out int id))
+                throw new ArgumentOutOfRangeException(key, value, "Hodnota není typu int.");
+            return id;
+        }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

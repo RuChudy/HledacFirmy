@@ -28,7 +28,11 @@
                     </td>
                     <td>@site.Id</td>
                     <td><a asp-controller="Home" asp-action="Feed" asp-route-id="@site.Id">@site.Title</a></td>
-                    <td><a href="@srcUri"><small>@srcUri</small></a></td>
+                    <td>@if (srcUri.Length > 0)
+                        {
+                            <a href="@srcUri" class="link-secondary"><small>@srcUri</small></a>
+                        }
+                    </td>
                     <td><button type="submit" id="deleteRssSubmit" name="deleteRssId" value="@site.Id" class="btn btn-outline-danger btn-sm">Smazat</button></td>
                 </tr>
                 position++;

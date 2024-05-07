@@ -2,6 +2,7 @@
 using Hledac.Domain.Rss.Services;
 using HledacFirmy.WebMvcApp.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Diagnostics;
 
 namespace HledacFirmy.WebMvcApp.Controllers
@@ -30,14 +31,29 @@ namespace HledacFirmy.WebMvcApp.Controllers
         }
 
         /// <summary>
-        /// Zobrazí detail feedu se zprávami.
+        /// Zobrazí detail feedu s clanky.
         /// </summary>
         /// <param name="id">Id kanálu v databázi.</param>
         /// <returns>Detail kanálu s feedy.</returns>
         [Route("feed/{id}")]
         public IActionResult Feed([FromRoute] int id)
         {
-            return View("Feed", id);
+            return View("Feed", new RssItemSearchModel { FeedId = id });
+        }
+
+        /// <summary>
+        /// Zobrazí detail feedu s filtrem hledani v clancich.
+        /// </summary>
+        /// <param name="id">Id kanálu v databázi.</param>
+        /// <returns>Detail kanálu s feedy.</returns>
+        [HttpPost]
+        [Route("feed/{id}")]
+        public IActionResult Feed([FromRoute] int id, [FromForm] RssItemSearchModel filter)
+        {
+            if (!id.Equals(filter?.FeedId))
+                throw new ArgumentOutOfRangeException("FeedId", filter?.FeedId, $"Hodnota nemá očekávanou hodnotu {id}.");
+
+            return View("Feed", filter);
         }
 
         /// <summary>

@@ -1,0 +1,14 @@
+﻿@using Hledac.Domain.Rss
+@model ICollection<RssCachedSite>?
+@{
+    ViewData["Title"] = "Seznam Rss kanálů";
+}
+
+<div class="text-center">
+    <h1 class="display-6">Seznam Rss kanálů</h1>
+</div>
+
+@(await Html.PartialAsync("../Rss/FeedsAddForm"))
+
+@(await Html.PartialAsync("../Rss/FeedsAllTable", Model))
+

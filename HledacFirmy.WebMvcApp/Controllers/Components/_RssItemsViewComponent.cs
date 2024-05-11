@@ -11,7 +11,7 @@ namespace HledacFirmy.WebMvcApp.Controllers.Components;
 [ViewComponent(Name = "_RssItems")]
 public class _RssItemsViewComponent : ViewComponent
 {
-    private readonly ILogger<_RssSitesViewComponent> _logger;
+    private readonly ILogger<_RssItemsViewComponent> _logger;
     private readonly IRssRepositoryService _rss;
 
     /// <summary>
@@ -19,7 +19,7 @@ public class _RssItemsViewComponent : ViewComponent
     /// </summary>
     /// <param name="logger">Loger.</param>
     /// <param name="rss">Repozitář.</param>
-    public _RssItemsViewComponent(ILogger<_RssSitesViewComponent> logger, IRssRepositoryService rss)
+    public _RssItemsViewComponent(ILogger<_RssItemsViewComponent> logger, IRssRepositoryService rss)
     {
         _logger = logger;
         _rss = rss;

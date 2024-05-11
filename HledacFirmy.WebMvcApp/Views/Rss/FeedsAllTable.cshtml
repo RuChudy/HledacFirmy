@@ -1,0 +1,58 @@
+﻿@using Hledac.Domain.Rss
+@model ICollection<RssCachedSite>?
+
+@if (Model != null)
+{
+    <form id="deleteRssSite" asp-controller="Rss" asp-action="Delete" method="post" role="form">
+        <table id="datatableRssSites" class="table table-sm table-striped table-hover">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" onClick="toggle(this)" /></th>
+                    <th>Db Id</th>
+                    <th>Název</th>
+                    <th>Zdroj</th>
+                    <th>Akce</th>
+                </tr>
+            </thead>
+            @if (Model?.Count > 0)
+            {
+                <tbody>
+                    @{
+                        int position = 0;
+                    }
+                    @foreach (var site in Model)
+                    {
+                        string srcUri = (site.Site?.Uri ?? string.Empty).Trim();
+                        <tr>
+                            <td>
+                                <input type="checkbox" id='@(string.Concat("batchDelete", position))' name='@(string.Concat("bulk", position))' class="j-bulk-check" />
+                                <input type="hidden" id='@(string.Concat("batchValue", position))' name='@(string.Concat("val", position))' value="@site.Id" />
+                            </td>
+                            <td>@site.Id</td>
+                            <td><a asp-controller="Rss" asp-action="Detail" asp-route-id="@site.Id">@site.Title</a></td>
+                            <td>
+                                @if (srcUri.Length > 0)
+                                {
+                                    <a href="@srcUri" class="link-secondary"><small>@srcUri</small></a>
+                                }
+                            </td>
+                            <td><button type="submit" id="deleteRssSubmit" name="deleteRssId" value="@site.Id" class="btn btn-outline-danger btn-sm">Smazat</button></td>
+                        </tr>
+                        position++;
+                    }
+                </tbody>
+            }
+        </table>
+        <button type="submit" id="deleteRssBulkSubmit" name="deleteBulk" value="true" class="btn btn-danger btn-sm">Smazat vybranné</button>
+    </form>
+}
+<script type="text/javascript">
+    //<![CDATA[
+    function toggle(source) {
+        checkboxes = document.getElementsByClassName('j-bulk-check');
+        for (var i = 0, n = checkboxes.length; i < n; i++) {
+            checkboxes[i].checked = source.checked;
+        }
+    }
+    //]]>
+</script>

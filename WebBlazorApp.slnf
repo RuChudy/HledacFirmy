@@ -1,0 +1,12 @@
+{
+  "solution": {
+    "path": "HledacFirmy.sln",
+    "projects": [
+      "Hledac.Core\\Hledac.Core.csproj",
+      "Hledac.Database\\Hledac.Database.csproj",
+      "Hledac.Domain\\Hledac.Domain.csproj",
+      "HledacFirmy.Api\\HledacFirmy.Api.csproj",
+      "HledacFirmy.WebBlazorApp\\HledacFirmy.WebBlazorApp.csproj"
+    ]
+  }
+}

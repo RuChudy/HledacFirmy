@@ -74,9 +74,10 @@ public class AresTest
         AresEkonomickySubjekt? result = await aresClient.NactiEkonomickySubjektAsync(sroInsolvence);
         Assert.IsNotNull(result);
 
-        if (result?.SeznamRegistraci?.InIr() == true)
+        if (result?.SeznamRegistraci?.InVr() == true)
         {
-
+            AresVrEkonomickeSubjekty? test = await aresClient.NactiVrAsync(sroInsolvence);
+            Assert.IsNotNull(test);
         }
 
         if (result?.SeznamRegistraci?.InRes() == true)

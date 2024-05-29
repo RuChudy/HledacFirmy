@@ -68,6 +68,22 @@ public class AresHttpClient
         return result;
     }
 
+    /// <summary>
+    /// Najde v VR firmu dle ičo.
+    /// </summary>
+    /// <param name="ico">Hledané ičo.</param>
+    /// <returns>Podrobnosti firmy nebo null, pokud nenalezeno.</returns>
+    public async Task<AresVrEkonomickeSubjekty?> NactiVrAsync(string ico)
+    {
+        Uri restUri = new Uri(string.Concat("ekonomicke-subjekty-v-be/rest/ekonomicke-subjekty-vr/", ico), UriKind.Relative);
+
+        AresVrEkonomickeSubjekty? result = await FromJson<AresVrEkonomickeSubjekty>(restUri);
+        if (result is not null)
+            _logger.LogDebug($"ARES VR Nalezeno ico={result?.IcoId}.");
+
+        return result;
+    }
+
     private async Task<T?> FromJson<T>(Uri restUri) where T : class, new()
     {
         _logger.LogDebug($"ARES kontaktuji '{_httpClient.BaseAddress}{restUri}'..");

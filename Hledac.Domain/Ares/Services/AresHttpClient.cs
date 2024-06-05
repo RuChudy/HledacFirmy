@@ -37,13 +37,26 @@ public class AresHttpClient
     }
 
     /// <summary>
+    /// Kontroluje format ic a pripadne doplni o nuly.
+    /// </summary>
+    /// <param name="ico">ico.</param>
+    /// <returns>platny format ic.</returns>
+    private static string ToUriIco(string ico)
+    {
+        if (string.IsNullOrWhiteSpace(ico) || ico.Length > 8 || !ico.All(char.IsDigit))
+            throw new ArgumentNullException(nameof(ico));
+
+        return ico.PadLeft(8, '0');
+    }
+
+    /// <summary>
     /// Najde v ARES firmu dle ičo.
     /// </summary>
     /// <param name="ico">Hledané ičo.</param>
     /// <returns>Podrobnosti firmy nebo null, pokud nenalezeno.</returns>
     public async Task<AresEkonomickySubjekt?> NactiEkonomickySubjektAsync(string ico)
     {
-        Uri restUri = new Uri(string.Concat("ekonomicke-subjekty-v-be/rest/ekonomicke-subjekty/", ico), UriKind.Relative);
+        Uri restUri = new Uri(string.Concat("ekonomicke-subjekty-v-be/rest/ekonomicke-subjekty/", ToUriIco(ico)), UriKind.Relative);
 
         AresEkonomickySubjekt? subject = await FromJson<AresEkonomickySubjekt>(restUri);
         if (subject is not null)
@@ -59,7 +72,7 @@ public class AresHttpClient
     /// <returns>Podrobnosti firmy nebo null, pokud nenalezeno.</returns>
     public async Task<AresRZP?> NactiRZPAsync(string ico)
     {
-        Uri restUri = new Uri(string.Concat("ekonomicke-subjekty-v-be/rest/ekonomicke-subjekty-rzp/", ico), UriKind.Relative);
+        Uri restUri = new Uri(string.Concat("ekonomicke-subjekty-v-be/rest/ekonomicke-subjekty-rzp/", ToUriIco(ico)), UriKind.Relative);
 
         AresRZP? result = await FromJson<AresRZP>(restUri);
         if (result is not null)
@@ -75,7 +88,7 @@ public class AresHttpClient
     /// <returns>Podrobnosti firmy nebo null, pokud nenalezeno.</returns>
     public async Task<AresVrEkonomickeSubjekty?> NactiVrAsync(string ico)
     {
-        Uri restUri = new Uri(string.Concat("ekonomicke-subjekty-v-be/rest/ekonomicke-subjekty-vr/", ico), UriKind.Relative);
+        Uri restUri = new Uri(string.Concat("ekonomicke-subjekty-v-be/rest/ekonomicke-subjekty-vr/", ToUriIco(ico)), UriKind.Relative);
 
         AresVrEkonomickeSubjekty? result = await FromJson<AresVrEkonomickeSubjekty>(restUri);
         if (result is not null)

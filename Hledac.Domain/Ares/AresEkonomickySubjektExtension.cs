@@ -19,9 +19,4 @@ public static class AresEkonomickySubjektExtension
     public static bool InRed(this AresSeznamRegistraci subjekt) => "AKTIVNI".Equals(subjekt?.StavZdrojeRed, StringComparison.InvariantCultureIgnoreCase);
 
     // HISTORICKY, NEEXISTUJICI
-
-    public static bool ToFirmaReqest(this AresEkonomickySubjekt subject)
-    {
-        return true;
-    }
 }

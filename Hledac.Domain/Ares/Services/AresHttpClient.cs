@@ -1,4 +1,7 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
+using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
@@ -60,7 +63,7 @@ public class AresHttpClient
 
         AresEkonomickySubjekt? subject = await FromJson<AresEkonomickySubjekt>(restUri);
         if (subject is not null)
-            _logger.LogDebug($"ARES RZP Nalezeno ico={subject?.IcoId}.");
+            _logger.LogDebug($"ARES SUB Nalezeno ico={subject?.IcoId}.");
 
         return subject;
     }
@@ -95,6 +98,41 @@ public class AresHttpClient
             _logger.LogDebug($"ARES VR Nalezeno ico={result?.IcoId}.");
 
         return result;
+    }
+
+    /// <summary>
+    /// Najde v VR firmy dle filtru ičo.
+    /// </summary>
+    /// <param name="filter">Filtr hledání.</param>
+    /// <returns>Podrobnosti firem.</returns>
+    public async Task<AresVrRoot?> NactiVrDleFiltruAsync(AresFilterVr filter)
+    {
+        ArgumentNullException.ThrowIfNull(nameof(filter));
+
+        Uri restUri = new Uri("ekonomicke-subjekty-v-be/rest/ekonomicke-subjekty-vr/vyhledat", UriKind.Relative);
+
+        string jsonText = JsonSerializer.Serialize(filter);
+
+        using var content = new StringContent(jsonText, Encoding.UTF8, "application/json");
+        using var request = new HttpRequestMessage(HttpMethod.Post, restUri) { Content = content };
+
+        _logger.LogDebug($"ARES kontaktuji '{_httpClient.BaseAddress}{restUri}'..");
+        using var httpResponseMessage = await _httpClient.SendAsync(request);
+
+        httpResponseMessage.EnsureSuccessStatusCode(); // throws if not 200-299
+
+        if (!(httpResponseMessage.Content is object) || !(httpResponseMessage.Content?.Headers?.ContentType?.MediaType?.Equals("application/json", StringComparison.InvariantCultureIgnoreCase) is true))
+            throw new HttpRequestException("HTTP Odpověď formátu JSON nelze rekonstruovat.", null, HttpStatusCode.UnsupportedMediaType);
+
+        using Stream contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
+
+        return await JsonSerializer.DeserializeAsync<AresVrRoot>(
+            utf8Json: contentStream,
+            options: new JsonSerializerOptions
+            {
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                PropertyNameCaseInsensitive = true
+            });
     }
 
     private async Task<T?> FromJson<T>(Uri restUri) where T : class, new()

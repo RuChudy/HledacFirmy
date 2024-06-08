@@ -5,7 +5,7 @@ namespace Hledac.Domain.Ares;
 public sealed class AresVrRoot
 {
     [JsonPropertyName("pocetCelkem")]
-    public long? PocetCelkem { get; set; }
+    public decimal? PocetCelkem { get; set; }
 
     [JsonPropertyName("ekonomickeSubjekty")]
     public List<AresVrEkonomickeSubjekty>? EkonomickeSubjekty { get; set; }
@@ -20,40 +20,40 @@ public sealed class AresVrAdresa
     public string? NazevStatu { get; set; }
 
     [JsonPropertyName("kodKraje")]
-    public long? KodKraje { get; set; }
+    public decimal? KodKraje { get; set; }
 
     [JsonPropertyName("nazevKraje")]
     public string? NazevKraje { get; set; }
 
     [JsonPropertyName("kodOkresu")]
-    public long? KodOkresu { get; set; }
+    public decimal? KodOkresu { get; set; }
 
     [JsonPropertyName("nazevOkresu")]
     public string? NazevOkresu { get; set; }
 
     [JsonPropertyName("kodObce")]
-    public long? KodObce { get; set; }
+    public decimal? KodObce { get; set; }
 
     [JsonPropertyName("nazevObce")]
     public string? NazevObce { get; set; }
 
     [JsonPropertyName("kodSpravnihoObvodu")]
-    public long? KodSpravnihoObvodu { get; set; }
+    public decimal? KodSpravnihoObvodu { get; set; }
 
     [JsonPropertyName("nazevSpravnihoObvodu")]
     public string? NazevSpravnihoObvodu { get; set; }
 
     [JsonPropertyName("kodMestskehoObvodu")]
-    public long? KodMestskehoObvodu { get; set; }
+    public decimal? KodMestskehoObvodu { get; set; }
 
     [JsonPropertyName("nazevMestskehoObvodu")]
     public string? NazevMestskehoObvodu { get; set; }
 
     [JsonPropertyName("kodMestskeCastiObvodu")]
-    public long? KodMestskeCastiObvodu { get; set; }
+    public decimal? KodMestskeCastiObvodu { get; set; }
 
     [JsonPropertyName("kodUlice")]
-    public long? KodUlice { get; set; }
+    public decimal? KodUlice { get; set; }
 
     [JsonPropertyName("nazevMestskeCastiObvodu")]
     public string? NazevMestskeCastiObvodu { get; set; }
@@ -62,16 +62,16 @@ public sealed class AresVrAdresa
     public string? NazevUlice { get; set; }
 
     [JsonPropertyName("cisloDomovni")]
-    public long? CisloDomovni { get; set; }
+    public decimal? CisloDomovni { get; set; }
 
     [JsonPropertyName("doplnekAdresy")]
     public string? DoplnekAdresy { get; set; }
 
     [JsonPropertyName("kodCastiObce")]
-    public long? KodCastiObce { get; set; }
+    public decimal? KodCastiObce { get; set; }
 
     [JsonPropertyName("cisloOrientacni")]
-    public long? CisloOrientacni { get; set; }
+    public decimal? CisloOrientacni { get; set; }
 
     [JsonPropertyName("cisloOrientacniPismeno")]
     public string? CisloOrientacniPismeno { get; set; }
@@ -80,10 +80,10 @@ public sealed class AresVrAdresa
     public string? NazevCastiObce { get; set; }
 
     [JsonPropertyName("kodAdresnihoMista")]
-    public long? KodAdresnihoMista { get; set; }
+    public decimal? KodAdresnihoMista { get; set; }
 
     [JsonPropertyName("psc")]
-    public long? Psc { get; set; }
+    public decimal? Psc { get; set; }
 
     [JsonPropertyName("textovaAdresa")]
     public string? TextovaAdresa { get; set; }
@@ -131,7 +131,7 @@ public sealed class AresVrAkcie
     public string? PodobaAkcie { get; set; }
 
     [JsonPropertyName("pocet")]
-    public long? Pocet { get; set; }
+    public decimal? Pocet { get; set; }
 
     [JsonPropertyName("text")]
     public string? Text { get; set; }
@@ -149,40 +149,40 @@ public sealed class AresVrBydliste
     public string? NazevStatu { get; set; }
 
     [JsonPropertyName("kodKraje")]
-    public long? KodKraje { get; set; }
+    public decimal? KodKraje { get; set; }
 
     [JsonPropertyName("nazevKraje")]
     public string? NazevKraje { get; set; }
 
     [JsonPropertyName("kodOkresu")]
-    public long? KodOkresu { get; set; }
+    public decimal? KodOkresu { get; set; }
 
     [JsonPropertyName("nazevOkresu")]
     public string? NazevOkresu { get; set; }
 
     [JsonPropertyName("kodObce")]
-    public long? KodObce { get; set; }
+    public decimal? KodObce { get; set; }
 
     [JsonPropertyName("nazevObce")]
     public string? NazevObce { get; set; }
 
     [JsonPropertyName("kodSpravnihoObvodu")]
-    public long? KodSpravnihoObvodu { get; set; }
+    public decimal? KodSpravnihoObvodu { get; set; }
 
     [JsonPropertyName("nazevSpravnihoObvodu")]
     public string? NazevSpravnihoObvodu { get; set; }
 
     [JsonPropertyName("kodMestskehoObvodu")]
-    public long? KodMestskehoObvodu { get; set; }
+    public decimal? KodMestskehoObvodu { get; set; }
 
     [JsonPropertyName("nazevMestskehoObvodu")]
     public string? NazevMestskehoObvodu { get; set; }
 
     [JsonPropertyName("kodMestskeCastiObvodu")]
-    public long? KodMestskeCastiObvodu { get; set; }
+    public decimal? KodMestskeCastiObvodu { get; set; }
 
     [JsonPropertyName("kodUlice")]
-    public long? KodUlice { get; set; }
+    public decimal? KodUlice { get; set; }
 
     [JsonPropertyName("nazevMestskeCastiObvodu")]
     public string? NazevMestskeCastiObvodu { get; set; }
@@ -191,16 +191,16 @@ public sealed class AresVrBydliste
     public string? NazevUlice { get; set; }
 
     [JsonPropertyName("cisloDomovni")]
-    public long? CisloDomovni { get; set; }
+    public decimal? CisloDomovni { get; set; }
 
     [JsonPropertyName("doplnekAdresy")]
     public string? DoplnekAdresy { get; set; }
 
     [JsonPropertyName("kodCastiObce")]
-    public long? KodCastiObce { get; set; }
+    public decimal? KodCastiObce { get; set; }
 
     [JsonPropertyName("cisloOrientacni")]
-    public long? CisloOrientacni { get; set; }
+    public decimal? CisloOrientacni { get; set; }
 
     [JsonPropertyName("cisloOrientacniPismeno")]
     public string? CisloOrientacniPismeno { get; set; }
@@ -209,10 +209,10 @@ public sealed class AresVrBydliste
     public string? NazevCastiObce { get; set; }
 
     [JsonPropertyName("kodAdresnihoMista")]
-    public long? KodAdresnihoMista { get; set; }
+    public decimal? KodAdresnihoMista { get; set; }
 
     [JsonPropertyName("psc")]
-    public long? Psc { get; set; }
+    public decimal? Psc { get; set; }
 
     [JsonPropertyName("textovaAdresa")]
     public string? TextovaAdresa { get; set; }
@@ -671,10 +671,10 @@ public sealed class AresVrPocetClenu
     public DateTime? DatumVymazu { get; set; }
 
     [JsonPropertyName("pocetClenu")]
-    public long? PocetClenu { get; set; }
+    public decimal? PocetClenu { get; set; }
 
     [JsonPropertyName("maxPocetClenu")]
-    public long? MaxPocetClenu { get; set; }
+    public decimal? MaxPocetClenu { get; set; }
 
     [JsonPropertyName("typ")]
     public string? Typ { get; set; }
@@ -872,7 +872,7 @@ public sealed class AresVrSpisovaZnacka
     public string? Oddil { get; set; }
 
     [JsonPropertyName("vlozka")]
-    public long? Vlozka { get; set; }
+    public decimal? Vlozka { get; set; }
 }
 
 public sealed class AresVrSplaceni

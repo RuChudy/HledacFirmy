@@ -116,6 +116,31 @@ public class AresTest
         // string sroInsolvence = "25291441";
         // string euInsolvence = "24196444";
 
+        var filter = new AresFilterVr
+        {
+            Ico = new List<string>
+            {
+                "24313751",
+                "02790599",
+                "01453599",
+                "25291441",
+                "24196444",
+                "01700189",
+                "03347737"
+            }
+        };
+
+        AresVrRoot? resultVr = await aresClient.NactiVrDleFiltruAsync(filter);
+        Assert.IsNotNull(resultVr);
+        Assert.IsNotNull(resultVr.EkonomickeSubjekty);
+
+        var subjekty = Subject.Create(resultVr.EkonomickeSubjekty)?.ToList();
+
+        var found = subjekty?.Select(s => s?.ICO ?? string.Empty).ToList();
+        var notFound = filter.Ico.Where(i => found?.Contains(i) is false).ToList();
+
+
+
         AresEkonomickySubjekt? result = await aresClient.NactiEkonomickySubjektAsync(sroXaver);
         Assert.IsNotNull(result);
 

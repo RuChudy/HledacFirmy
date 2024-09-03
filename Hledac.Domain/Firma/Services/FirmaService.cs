@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Hledac.Database.Context;
 using Hledac.Domain.Ares.Services;
 using Hledac.Domain.Ares;
+using Azure;
 
 namespace Hledac.Domain.Firma.Services;
 
@@ -134,4 +135,54 @@ public class FirmaService
 
         return dbRow.ToFirmaDto();
     }
+
+    /// <summary>
+    /// </summary>
+    public SubjectVr? UlozFirmaVrDoDatabaze(SubjectDbInfo subjekt)
+    {
+        if (subjekt == null || subjekt.ICO == null || subjekt.ObchodniFirma == null)
+            return null;
+
+        SubjectVr? dbRow = _db.UpdateSubjektVr(new SubjectVr
+        {
+            ICO = subjekt.ICO,
+            PravniForma = (subjekt.PravniForma is null) ? null : int.Parse(subjekt.PravniForma.Trim()),
+            DatumPosledniKontroly = subjekt.DatumPosledniKontroly,
+            Rejstrik = subjekt.Rejstrik,
+            RequestError = subjekt.RequestError,
+            ResponseError = subjekt.ResponseError,
+            Aktualizace_DB = subjekt.Aktualizace_DB,
+            TypVypisu = subjekt.TypVypisu,
+            S_StavSubjektu = subjekt.S_StavSubjektu,
+            S_Konkurz = subjekt.S_Konkurz,
+            S_Vyrovnani = subjekt.S_Vyrovnani,
+            S_Zamitnuti = subjekt.S_Zamitnuti,
+            S_Likvidace = subjekt.S_Likvidace,
+            ObchodniFirma = subjekt.ObchodniFirma,
+            Jmeno = subjekt.Jmeno,
+            Prijmeni = subjekt.Prijmeni,
+            DatumNarozeni = subjekt.DatumNarozeni,
+            PF_Kody = (subjekt.PF_Kody is null) ? null : int.Parse(subjekt.PF_Kody.Trim()),
+            PF_Nazev = subjekt.PF_Nazev,
+            PF_Osoba = subjekt.PF_Osoba,
+            PF_Text = subjekt.PF_Text,
+            A_IDAdresy = subjekt.A_IDAdresy,
+            A_KodStatu = subjekt.A_KodStatu,
+            A_NazevStatu = subjekt.A_NazevStatu,
+            A_NazevOkresu = subjekt.A_NazevOkresu,
+            A_NazevObce = subjekt.A_NazevObce,
+            A_NazevCastiObce = subjekt.A_NazevCastiObce,
+            A_NazevUlice = subjekt.A_NazevUlice,
+            A_CisloDomovni = subjekt.A_CisloDomovni,
+            A_TypCisloDomovni = (subjekt.A_TypCisloDomovni is null) ? null : int.Parse(subjekt.A_TypCisloDomovni.Trim()),
+            A_CisloOrientacni = subjekt.A_CisloOrientacni,
+            A_PSC = subjekt.A_PSC,
+            DatumZapisu = subjekt.DatumZapisu,
+            MistoZapisu = subjekt.MistoZapisu,
+            ZnackaZapisu = subjekt.ZnackaZapisu
+        });
+
+        return dbRow;
+    }
+
 }

@@ -9,6 +9,8 @@ using Hledac.Domain.Ares.Services;
 using Hledac.Domain.Firma.Services;
 using Hledac.Domain.Ares;
 using Hledac.Domain.Rss;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Hledac.TestProject;
 
@@ -70,63 +72,31 @@ public class AresTest
         var aresClient = _host.Services.GetRequiredService<AresHttpClient>();
         Assert.IsInstanceOfType<AresHttpClient>(aresClient);
 
-        /*
-         1453599
+        var firmaSrvc = _host.Services.GetRequiredService<FirmaService>();
+        Assert.IsInstanceOfType<FirmaService>(firmaSrvc);
 
-        ID=1478
-        ICO=1453599
-        PravniForma=2
-        DatumPosledniKontroly=2024-01-02 05:14:11.000
-        DatumZpracovani=NULL
-        Rejstrik=Vypis_OR
-        RequestError=NULL
-        ResponseError=NULL
-        Aktualizace_DB=2024-01-01 00:00:00.000
-        TypVypisu=aktualni
-        S_StavSubjektu=Aktivní
-        S_Konkurz=0
-        S_Vyrovnani=0
-        S_Zamitnuti=0
-        S_Likvidace=1
-        ObchodniFirma=STOMAPLANT BR, s.r.o. v likvidaci
-        Jmeno=NULL
-        Prijmeni=NULL
-        DatumNarozeni=NULL
-        PF_Kody=112
-        PF_Nazev=Společnost s ručením omezeným
-        PF_Osoba=P
-        PF_Text=Tuzemská
-        A_IDAdresy=33996696
-        A_KodStatu=203
-        A_NazevStatu=Česká republika
-        A_NazevOkresu=NULL
-        A_NazevObce=Brno
-        A_NazevCastiObce=Trnitá
-        A_NazevUlice=Křenová
-        A_CisloDomovni=479
-        A_TypCisloDomovni=1
-        A_CisloOrientacni=71
-        A_PSC=60200
-        DatumZapisu=2013-03-05 00:00:00.000
-        MistoZapisu=Krajský soud v Brně
-        ZnackaZapisu=C 78197
-        */
-        string sroXaver = "1453599";
-
-        // string sroInsolvence = "25291441";
-        // string euInsolvence = "24196444";
 
         var filter = new AresFilterVr
         {
             Ico = new List<string>
             {
+                /*
+                "10234934",
+                "10523278",
+                "15503577",
+                "16542142",
+                "16662741",
+                "24678988",
+                "27312283", // posledni osoba
+
                 "24313751",
                 "02790599",
                 "01453599",
                 "25291441",
                 "24196444",
-                "01700189",
-                "03347737"
+                */
+                "03347737",
+                "01700189"
             }
         };
 
@@ -134,13 +104,35 @@ public class AresTest
         Assert.IsNotNull(resultVr);
         Assert.IsNotNull(resultVr.EkonomickeSubjekty);
 
+        JsonSerializerOptions jsonOptions = new JsonSerializerOptions()
+        {
+            WriteIndented = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        };
+
+        DirectoryInfo dir = new DirectoryInfo(@"C:\TempRuda\AresData");
+        foreach (var subject in resultVr.EkonomickeSubjekty)
+        {
+            FileInfo aresFile = new FileInfo(Path.Combine(dir.FullName, String.Concat(subject.IcoId!, "-ares.json")));
+            using (var writer = aresFile.CreateText())
+                await writer.WriteAsync(JsonSerializer.Serialize(subject, jsonOptions));
+
+            SubjectDbInfo dbInfo = Subject.Create(subject)!;
+            SubjectVr? dbRow = firmaSrvc.UlozFirmaVrDoDatabaze(dbInfo);
+
+            FileInfo dbFile = new FileInfo(Path.Combine(dir.FullName, String.Concat(subject.IcoId!, "-dbinf.json")));
+            using (var writer = dbFile.CreateText())
+                await writer.WriteAsync(JsonSerializer.Serialize(dbInfo, jsonOptions));
+        }
+
         var subjekty = Subject.Create(resultVr.EkonomickeSubjekty)?.ToList();
 
         var found = subjekty?.Select(s => s?.ICO ?? string.Empty).ToList();
         var notFound = filter.Ico.Where(i => found?.Contains(i) is false).ToList();
 
 
-
+        /*
         AresEkonomickySubjekt? result = await aresClient.NactiEkonomickySubjektAsync(sroXaver);
         Assert.IsNotNull(result);
 
@@ -160,7 +152,6 @@ public class AresTest
         {
             Assert.IsTrue(true);
         }
-
         */
     }
 

@@ -17,6 +17,7 @@ public partial class SubjektDbContext : DbContext
     public DbSet<Subjekt> Subjekty { get; set; }
     public DbSet<RssCacheFeed> RssCacheFeeds { get; set; }
     public DbSet<RssCacheFeedItem> RssCacheFeedItems { get; set; }
+    public DbSet<SubjectVr> SubjectVrSet { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -24,6 +25,7 @@ public partial class SubjektDbContext : DbContext
         modelBuilder.Entity<Subjekt>();
         modelBuilder.Entity<RssCacheFeed>();
         modelBuilder.Entity<RssCacheFeedItem>();
+        modelBuilder.Entity<SubjectVr>();
     }
 }
 

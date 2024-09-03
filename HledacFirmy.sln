@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hledac.TestProject", "Hleda
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HledacFirmy.WebBlazorApp", "HledacFirmy.WebBlazorApp\HledacFirmy.WebBlazorApp.csproj", "{E0B85FF7-B596-435C-8723-E9FBE429C2A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HledacFirmy.WebMvcApp", "HledacFirmy.WebMvcApp\HledacFirmy.WebMvcApp.csproj", "{D3F77C0C-BB42-444F-8CC1-48D8459A945B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HledacFirmy.WebMvcApp", "HledacFirmy.WebMvcApp\HledacFirmy.WebMvcApp.csproj", "{D3F77C0C-BB42-444F-8CC1-48D8459A945B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

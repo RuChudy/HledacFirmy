@@ -1,3 +1,5 @@
+using System;
+using HledacFirmy.Entities;
 using Microsoft.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
@@ -9,12 +11,11 @@ using Volo.Abp.EntityFrameworkCore.Modeling;
 using Volo.Abp.FeatureManagement.EntityFrameworkCore;
 using Volo.Abp.Identity;
 using Volo.Abp.Identity.EntityFrameworkCore;
+using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.PermissionManagement.EntityFrameworkCore;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;
-using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
-using HledacFirmy.Entities;
 
 namespace HledacFirmy.EntityFrameworkCore;
 
@@ -84,9 +85,31 @@ public class HledacFirmyDbContext :
 
         builder.Entity<Subjekt>(b =>
         {
-            b.ToTable(HledacFirmyConsts.DbTablePrefix + "YourEntities", HledacFirmyConsts.DbSchema);
+            b.ToTable(HledacFirmyConsts.DbTablePrefix + nameof(Subjekt), HledacFirmyConsts.DbSchema);
             b.ConfigureByConvention(); //auto configure for the base class props
-        
+
+            b.HasKey(x => x.Id);
+            b.Property(p => p.Ico).IsRequired().HasColumnName(nameof(Subjekt.Ico)).HasColumnType("nvarchar").HasMaxLength(HledacFirmyConsts.IcoLength).IsUnicode(true);
+            b.Property(p => p.ObchJmeno).IsRequired().HasColumnName(nameof(Subjekt.ObchJmeno)).HasColumnType("nvarchar").HasMaxLength(HledacFirmyConsts.ObchJmenoLength).IsUnicode(true);
+            b.Property(p => p.Dic).HasColumnName(nameof(Subjekt.Dic)).HasColumnType("nvarchar").HasMaxLength(HledacFirmyConsts.DicLength).IsUnicode(true);
+
+            b.Property(p => p.DatumAktualizace).IsRequired().HasColumnName(nameof(Subjekt.DatumAktualizace)).HasColumnType("datetime2");
+            b.Property(p => p.DatumVzniku).IsRequired().HasColumnName(nameof(Subjekt.DatumVzniku)).HasColumnType("date");
+            b.Property(p => p.DatumZaniku).HasColumnName(nameof(Subjekt.DatumZaniku)).HasColumnType("date");
+
+            b.Property(p => p.Stat).HasColumnName(nameof(Subjekt.Stat)).HasColumnType("nvarchar").HasMaxLength(HledacFirmyConsts.BasicTextLength).IsUnicode(true);
+            b.Property(p => p.Kraj).HasColumnName(nameof(Subjekt.Kraj)).HasColumnType("nvarchar").HasMaxLength(HledacFirmyConsts.BasicTextLength).IsUnicode(true);
+            b.Property(p => p.Okres).HasColumnName(nameof(Subjekt.Okres)).HasColumnType("nvarchar").HasMaxLength(HledacFirmyConsts.BasicTextLength).IsUnicode(true);
+            b.Property(p => p.Obec).HasColumnName(nameof(Subjekt.Obec)).HasColumnType("nvarchar").HasMaxLength(HledacFirmyConsts.BasicTextLength).IsUnicode(true);
+            b.Property(p => p.Obvod).HasColumnName(nameof(Subjekt.Obvod)).HasColumnType("nvarchar").HasMaxLength(HledacFirmyConsts.BasicTextLength).IsUnicode(true);
+            b.Property(p => p.Ulice).HasColumnName(nameof(Subjekt.Ulice)).HasColumnType("nvarchar").HasMaxLength(HledacFirmyConsts.BasicTextLength).IsUnicode(true);
+            b.Property(p => p.CisloDomovni).HasColumnName(nameof(Subjekt.CisloDomovni)).HasColumnType("nvarchar").HasMaxLength(HledacFirmyConsts.BasicTextLength).IsUnicode(true);
+            b.Property(p => p.CisloOrientacni).HasColumnName(nameof(Subjekt.CisloOrientacni)).HasColumnType("nvarchar").HasMaxLength(HledacFirmyConsts.BasicTextLength).IsUnicode(true);
+            b.Property(p => p.Psc).HasColumnName(nameof(Subjekt.Psc)).HasColumnType("nvarchar").HasMaxLength(HledacFirmyConsts.PscLength).IsUnicode(true);
+            b.Property(p => p.DorucovaciAdresa1).HasColumnName(nameof(Subjekt.DorucovaciAdresa1)).HasColumnType("nvarchar").HasMaxLength(-1).IsUnicode(true);
+            b.Property(p => p.DorucovaciAdresa2).HasColumnName(nameof(Subjekt.DorucovaciAdresa2)).HasColumnType("nvarchar").HasMaxLength(-1).IsUnicode(true);
+            b.Property(p => p.DorucovaciAdresa3).HasColumnName(nameof(Subjekt.DorucovaciAdresa3)).HasColumnType("nvarchar").HasMaxLength(-1).IsUnicode(true);
+            b.Property(p => p.Description).HasColumnName(nameof(Subjekt.Description)).HasColumnType("nvarchar").HasMaxLength(-1).IsUnicode(true);
         });
     }
 }

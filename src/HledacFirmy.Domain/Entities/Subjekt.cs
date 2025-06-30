@@ -1,12 +1,13 @@
 ﻿using System;
 using Volo.Abp.Domain.Entities;
+using Volo.Abp.Domain.Entities.Auditing;
 
 namespace HledacFirmy.Entities;
 
 /// <summary>
 /// Subjekt - firma, definice tabulky.
 /// </summary>
-public class Subjekt : AggregateRoot<Guid>
+public class Subjekt : FullAuditedAggregateRoot<Guid>
 {
     public required string Ico { get; set; }
     public required string ObchJmeno { get; set; }

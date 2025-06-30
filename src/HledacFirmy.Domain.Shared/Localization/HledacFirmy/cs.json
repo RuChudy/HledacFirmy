@@ -1,0 +1,9 @@
+{
+  "Culture": "cs",
+  "Texts": {
+    "AppName": "HledacFirmy",
+    "Menu:Home": "Domů",
+    "LongWelcomeMessage": "Vítejte v aplikaci. Jedná se o startup projekt založený na frameworku ABP. Pro více informací navštivte",
+    "Welcome": "Vítejte"
+  }
+}

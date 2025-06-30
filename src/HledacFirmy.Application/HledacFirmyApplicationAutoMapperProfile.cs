@@ -1,4 +1,6 @@
 using AutoMapper;
+using HledacFirmy.Entities;
+using HledacFirmy.Hledac;
 
 namespace HledacFirmy;
 
@@ -9,5 +11,6 @@ public class HledacFirmyApplicationAutoMapperProfile : Profile
         /* You can configure your AutoMapper mapping configuration here.
          * Alternatively, you can split your mapping configurations
          * into multiple profile classes for a better organization. */
+        CreateMap<Subjekt, SubjektDto>();
     }
 }

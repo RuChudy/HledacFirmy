@@ -45,7 +45,7 @@ public class HledacFirmyDomainSharedModule : AbpModule
         Configure<AbpLocalizationOptions>(options =>
         {
             options.Resources
-                .Add<HledacFirmyResource>("en")
+                .Add<HledacFirmyResource>("cs")
                 .AddBaseTypes(typeof(AbpValidationResource))
                 .AddVirtualJson("/Localization/HledacFirmy");
 

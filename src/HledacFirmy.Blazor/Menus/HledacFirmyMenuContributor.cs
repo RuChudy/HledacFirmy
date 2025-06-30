@@ -38,8 +38,9 @@ public class HledacFirmyMenuContributor : IMenuContributor
         //Administration
         var administration = context.Menu.GetAdministration();
         administration.Order = 6;
-    
-        if (MultiTenancyConsts.IsEnabled)
+
+        bool isMultiTenancyEnabled = MultiTenancyConsts.IsEnabled;
+        if (isMultiTenancyEnabled)
         {
             administration.SetSubItemOrder(TenantManagementMenuNames.GroupName, 1);
         }

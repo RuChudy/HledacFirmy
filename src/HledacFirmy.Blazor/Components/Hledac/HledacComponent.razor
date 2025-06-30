@@ -1,0 +1,44 @@
+﻿@using HledacFirmy.Hledac
+@using HledacFirmy.Localization
+@using Volo.Abp.Application.Dtos
+@inherits AbpCrudPageBase<ISubjektAppService, SubjektDto, Guid, PagedAndSortedResultRequestDto>
+
+<h3>Firmy</h3>
+
+<DataGrid TItem="SubjektDto"
+          Data="Entities"
+          ReadData="OnDataGridReadAsync"
+          TotalItems="TotalCount"
+          ShowPager="true"
+          PageSize="PageSize">
+    <DataGridColumns>
+        <DataGridColumn TItem="SubjektDto"
+                        Field="@nameof(SubjektDto.Id)"
+                        Caption="@L["Id"]"></DataGridColumn>
+        <DataGridColumn TItem="SubjektDto"
+                        Field="@nameof(SubjektDto.Ico)"
+                        Caption="@L["Code"]"></DataGridColumn>
+        <DataGridColumn TItem="SubjektDto"
+                        Field="@nameof(SubjektDto.CreationTime)"
+                        Caption="@L["Dne"]">
+            <DisplayTemplate>
+                @context.CreationTime.ToShortDateString()
+            </DisplayTemplate>
+        </DataGridColumn>
+        <DataGridColumn TItem="SubjektDto"
+                        Field="@nameof(SubjektDto.ObchJmeno)"
+                        Caption="@L["Session"]"></DataGridColumn>
+        <DataGridColumn TItem="SubjektDto"
+                        Field="@nameof(SubjektDto.Obec)"
+                        Caption="@L["Transaction"]"></DataGridColumn>
+    </DataGridColumns>
+</DataGrid>
+
+@code {
+
+    // Constructor
+    public HledacComponent()
+    {
+        LocalizationResource = typeof(HledacFirmyResource);
+    }
+}

@@ -1,0 +1,101 @@
+{
+  "template": "app",
+  "imports": {
+    "Volo.Abp.LeptonXLiteTheme": {
+      "version": "4.1.1",
+      "isInstalled": true
+    },
+    "Volo.Abp.Account": {
+      "version": "9.1.1",
+      "isInstalled": true
+    },
+    "Volo.Abp.OpenIddict": {
+      "version": "9.1.1",
+      "isInstalled": true
+    },
+    "Volo.Abp.Identity": {
+      "version": "9.1.1",
+      "isInstalled": true
+    },
+    "Volo.Abp.TenantManagement": {
+      "version": "9.1.1",
+      "isInstalled": true
+    },
+    "Volo.Abp.SettingManagement": {
+      "version": "9.1.1",
+      "isInstalled": true
+    },
+    "Volo.Abp.PermissionManagement": {
+      "version": "9.1.1",
+      "isInstalled": true
+    },
+    "Volo.Abp.FeatureManagement": {
+      "version": "9.1.1",
+      "isInstalled": true
+    }
+  },
+  "folders": {
+    "items": {
+      "src": {},
+      "test": {}
+    }
+  },
+  "packages": {
+    "HledacFirmy.Application": {
+      "path": "src/HledacFirmy.Application/HledacFirmy.Application.abppkg",
+      "folder": "src"
+    },
+    "HledacFirmy.Application.Tests": {
+      "path": "test/HledacFirmy.Application.Tests/HledacFirmy.Application.Tests.abppkg",
+      "folder": "test"
+    },
+    "HledacFirmy.Domain.Shared": {
+      "path": "src/HledacFirmy.Domain.Shared/HledacFirmy.Domain.Shared.abppkg",
+      "folder": "src"
+    },
+    "HledacFirmy.Application.Contracts": {
+      "path": "src/HledacFirmy.Application.Contracts/HledacFirmy.Application.Contracts.abppkg",
+      "folder": "src"
+    },
+    "HledacFirmy.HttpApi": {
+      "path": "src/HledacFirmy.HttpApi/HledacFirmy.HttpApi.abppkg",
+      "folder": "src"
+    },
+    "HledacFirmy.HttpApi.Client": {
+      "path": "src/HledacFirmy.HttpApi.Client/HledacFirmy.HttpApi.Client.abppkg",
+      "folder": "src"
+    },
+    "HledacFirmy.EntityFrameworkCore.Tests": {
+      "path": "test/HledacFirmy.EntityFrameworkCore.Tests/HledacFirmy.EntityFrameworkCore.Tests.abppkg",
+      "folder": "test"
+    },
+    "HledacFirmy.EntityFrameworkCore": {
+      "path": "src/HledacFirmy.EntityFrameworkCore/HledacFirmy.EntityFrameworkCore.abppkg",
+      "folder": "src"
+    },
+    "HledacFirmy.TestBase": {
+      "path": "test/HledacFirmy.TestBase/HledacFirmy.TestBase.abppkg",
+      "folder": "test"
+    },
+    "HledacFirmy.Domain.Tests": {
+      "path": "test/HledacFirmy.Domain.Tests/HledacFirmy.Domain.Tests.abppkg",
+      "folder": "test"
+    },
+    "HledacFirmy.HttpApi.Client.ConsoleTestApp": {
+      "path": "test/HledacFirmy.HttpApi.Client.ConsoleTestApp/HledacFirmy.HttpApi.Client.ConsoleTestApp.abppkg",
+      "folder": "test"
+    },
+    "HledacFirmy.DbMigrator": {
+      "path": "src/HledacFirmy.DbMigrator/HledacFirmy.DbMigrator.abppkg",
+      "folder": "src"
+    },
+    "HledacFirmy.Blazor": {
+      "path": "src/HledacFirmy.Blazor/HledacFirmy.Blazor.abppkg",
+      "folder": "src"
+    },
+    "HledacFirmy.Domain": {
+      "path": "src/HledacFirmy.Domain/HledacFirmy.Domain.abppkg",
+      "folder": "src"
+    }
+  }
+}

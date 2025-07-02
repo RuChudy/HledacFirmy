@@ -1,21 +1,22 @@
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+using HledacFirmy.Ares.Services;
 using HledacFirmy.Localization;
 using HledacFirmy.MultiTenancy;
-using Volo.Abp.Localization;
-using Volo.Abp.Modularity;
-using Volo.Abp.MultiTenancy;
-using Volo.Abp.PermissionManagement.Identity;
-using Volo.Abp.SettingManagement;
-using Volo.Abp.BlobStoring.Database;
-using Volo.Abp.Caching;
-using Volo.Abp.OpenIddict;
-using Volo.Abp.PermissionManagement.OpenIddict;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Volo.Abp.AuditLogging;
 using Volo.Abp.BackgroundJobs;
+using Volo.Abp.BlobStoring.Database;
+using Volo.Abp.Caching;
 using Volo.Abp.Emailing;
 using Volo.Abp.FeatureManagement;
 using Volo.Abp.Identity;
+using Volo.Abp.Localization;
+using Volo.Abp.Modularity;
+using Volo.Abp.MultiTenancy;
+using Volo.Abp.OpenIddict;
+using Volo.Abp.PermissionManagement.Identity;
+using Volo.Abp.PermissionManagement.OpenIddict;
+using Volo.Abp.SettingManagement;
 using Volo.Abp.TenantManagement;
 
 namespace HledacFirmy;
@@ -39,6 +40,11 @@ public class HledacFirmyDomainModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
+        Configure<AresSettings>(option =>
+        {
+            context.Configuration.GetSection(AresSettings.SectionName);
+        });
+
         Configure<AbpMultiTenancyOptions>(options =>
         {
             options.IsEnabled = MultiTenancyConsts.IsEnabled;
@@ -66,6 +72,7 @@ public class HledacFirmyDomainModule : AbpModule
             options.Languages.Add(new LanguageInfo("sv", "sv", "Svenska"));
         });
         
+
 
 #if DEBUG
         context.Services.Replace(ServiceDescriptor.Singleton<IEmailSender, NullEmailSender>());

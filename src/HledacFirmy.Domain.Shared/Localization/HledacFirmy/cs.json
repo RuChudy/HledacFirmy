@@ -4,6 +4,17 @@
     "AppName": "HledacFirmy",
     "Menu:Home": "Domů",
     "LongWelcomeMessage": "Vítejte v aplikaci. Jedná se o startup projekt založený na frameworku ABP.",
-    "Welcome": "Vítejte"
+    "Welcome": "Vítejte",
+    "Ico": "Ič",
+    "ObchJmeno": "Jméno",
+    "Obec": "Obec",
+    "Aktualizace": "Aktualizováno",
+    "SearchByIc": "Vydledat dle IČ",
+    "FillIc": "Vyplňte IČ hledané firmy",
+    "SearchCompany": "Vyhledat firmu",
+    "Searching": "Hledám...",
+    "Error": "Chyba",
+    "Found": "Nalezeno",
+    "NotFound": "Nenalezeno"
   }
 }

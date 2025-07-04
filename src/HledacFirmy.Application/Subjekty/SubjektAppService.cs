@@ -4,7 +4,7 @@ using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 
-namespace HledacFirmy.Hledac
+namespace HledacFirmy.Subjekty
 {
     public class SubjektAppService :
         CrudAppService<Subjekt, SubjektDto, Guid, PagedAndSortedResultRequestDto>,

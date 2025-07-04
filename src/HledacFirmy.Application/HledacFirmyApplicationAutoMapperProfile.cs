@@ -1,6 +1,6 @@
 using AutoMapper;
 using HledacFirmy.Entities;
-using HledacFirmy.Hledac;
+using HledacFirmy.Subjekty;
 
 namespace HledacFirmy;
 

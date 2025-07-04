@@ -1,7 +1,7 @@
 ﻿using System;
 using Volo.Abp.Application.Dtos;
 
-namespace HledacFirmy.Hledac;
+namespace HledacFirmy.Subjekty;
 
 [Serializable]
 public class SubjektDto : FullAuditedEntityDto<Guid>

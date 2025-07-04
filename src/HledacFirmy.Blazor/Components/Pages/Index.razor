@@ -1,8 +1,11 @@
 ﻿@page "/"
+@using System.Globalization
 @using HledacFirmy.Ares.Services
 @using HledacFirmy.Blazor.Components.Hledac
+@using HledacFirmy.Hledac
+@using Volo.Abp.Timing
 @inherits HledacFirmyComponentBase
-@inject AresHttpClient AresClient
+@inject IHledacAppService Service
 
 <div class="row mb-3">
     <div class="col-xl-6 col-12 d-flex">
@@ -22,18 +25,15 @@
     <div class="col-xl-6 col-md-12 d-flex">
         <div class="card w-100 overflow-hidden">
             <div class="card-body">
-                <h3>Vydledat dle IČ</h3>
+                <h3>@L["SearchByIc"]</h3>
                 @if (IsSearching)
                 {
-                    <p class="text-muted mb-2">Hledám...</p>
+                    <p class="text-muted mb-2">@L["Searching"]</p>
                 }
                 else
                 {
-                    <p class="text-muted mb-2">
-                        Vyplňte IČ hledané firmy:
-                        <input @bind="@Value" type="text" id="ic" name="ic" required minlength="4" maxlength="8" size="10" />
-                    </p>
-                    <a class="btn btn-primary mb-3" @onclick="SearchIc">Vyhledat firmu</a>
+                    <p class="text-muted mb-2">@L["FillIc"] <input @bind="@SearchValue" type="text" id="ic" name="ic" required minlength="4" maxlength="8" size="10" /></p>
+                    <a class="btn btn-primary mb-3" @onclick="OnSearchIc">@L["SearchCompany"]</a>
                 }
             </div>
         </div>
@@ -43,36 +43,52 @@
     <div class="col-xl-12 col-12 d-flex">
         <div class="card w-100">
             <div class="card-body">
-                <HledacComponent />
+                <CascadingValue Value="@LastSearchTime" Name="LastSearchTime">
+                    <SubjektComponent />
+                </CascadingValue>
             </div>
         </div>
     </div>
 </div>
 
 @code {
+    public DateTime? LastSearchTime { get; set; }
+
     private bool IsSearching { get; set; } = false;
 
-    private string Value { get; set; } = string.Empty;
+    private string SearchValue { get; set; } = string.Empty;
 
-    private async Task SearchIc()
+    /// <summary>
+    /// Reakce na tlacitko Hledat Ic.
+    /// </summary>
+    private async Task OnSearchIc()
     {
         IsSearching = true;
         StateHasChanged();
         try
         {
-            var data = await AresClient.NactiEkonomickySubjektAsync(Value);
-            if (data is null)
+            if (!long.TryParse(SearchValue, NumberStyles.Integer, CultureInfo.CurrentCulture, out long ico) || ico < HledacFirmyConsts.IcoMin || ico > HledacFirmyConsts.IcoMax)
             {
-                await Message.Warn($"IČ '{Value}' nebylo nalezeno.", "Nenalezeno");
+                await Message.Error($"Hodnota '{SearchValue}' není IČO.", L["Error"]);
+                return;
             }
-            else
+
+            HledacVysledekDto data = await Service.PostFindAndUpdateIc(ico);
+            ArgumentNullException.ThrowIfNull(data);
+
+            if (data.Vysledek == HledacVysledekEnum.Nenalezeno)
             {
-                await Message.Success($"Nalezeno: {data?.ObchodniJmeno}", "Nalezeno");
+                await Message.Warn($"IČ '{SearchValue}' nebylo nalezeno.", L["NotFound"]);
+                return;
             }
+
+            LastSearchTime = Clock.Now;
+
+            await Message.Success($"Nalezeno: {data.Subjekt?.ObchJmeno}", L["Found"]);
         }
         catch (Exception ex)
         {
-            await Message.Error(ex.Message, "Chyba");
+            await Message.Error(ex.Message, L["Error"]);
         }
         finally
         {

@@ -1,10 +1,7 @@
-﻿@using HledacFirmy.Hledac
+﻿@using HledacFirmy.Subjekty
 @using HledacFirmy.Localization
 @using Volo.Abp.Application.Dtos
 @inherits AbpCrudPageBase<ISubjektAppService, SubjektDto, Guid, PagedAndSortedResultRequestDto>
-
-<h3>Firmy</h3>
-
 <DataGrid TItem="SubjektDto"
           Data="Entities"
           ReadData="OnDataGridReadAsync"
@@ -17,28 +14,35 @@
                         Caption="@L["Id"]"></DataGridColumn>
         <DataGridColumn TItem="SubjektDto"
                         Field="@nameof(SubjektDto.Ico)"
-                        Caption="@L["Code"]"></DataGridColumn>
-        <DataGridColumn TItem="SubjektDto"
-                        Field="@nameof(SubjektDto.CreationTime)"
-                        Caption="@L["Dne"]">
-            <DisplayTemplate>
-                @context.CreationTime.ToShortDateString()
-            </DisplayTemplate>
-        </DataGridColumn>
+                        Caption="@L["Ico"]"></DataGridColumn>
         <DataGridColumn TItem="SubjektDto"
                         Field="@nameof(SubjektDto.ObchJmeno)"
-                        Caption="@L["Session"]"></DataGridColumn>
+                        Caption="@L["ObchJmeno"]"></DataGridColumn>
         <DataGridColumn TItem="SubjektDto"
                         Field="@nameof(SubjektDto.Obec)"
-                        Caption="@L["Transaction"]"></DataGridColumn>
+                        Caption="@L["Obec"]"></DataGridColumn>
+        <DataGridColumn TItem="SubjektDto"
+                        Field="@nameof(SubjektDto.DatumAktualizace)"
+                        Caption="@L["Aktualizace"]">
+            <DisplayTemplate>
+                @context.DatumAktualizace.ToShortDateString()
+            </DisplayTemplate>
+        </DataGridColumn>
     </DataGridColumns>
 </DataGrid>
-
 @code {
+    [CascadingParameter(Name = "LastSearchTime")]
+    public DateTime? LastSearchTime { get; set; }
 
     // Constructor
-    public HledacComponent()
+    public SubjektComponent()
     {
         LocalizationResource = typeof(HledacFirmyResource);
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await GetEntitiesAsync();
+        await base.OnParametersSetAsync();
     }
 }

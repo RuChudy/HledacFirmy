@@ -5,7 +5,7 @@ using HledacFirmy.Subjekty;
 namespace HledacFirmy.Hledac;
 
 /// <summary>
-/// Predpis aplikacni sluzby pro hledani ICO firmy. Pokud hledane ICO není v lokalni DB vyhleda v systemu ARES.
+/// Predpis aplikacni sluzby pro hledani ICO firmy. Pokud hledane ICO neni v lokalni DB vyhleda v systemu ARES.
 /// </summary>
 public interface IHledacAppService
 {
